@@ -1,4 +1,4 @@
-package de.unknowncity.astralib.common.timer;
+package club.devcord.gamejam.timer;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

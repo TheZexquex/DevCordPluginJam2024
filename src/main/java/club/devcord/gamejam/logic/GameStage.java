@@ -1,6 +1,6 @@
-package club.devcord.gamejam;
+package club.devcord.gamejam.logic;
 
 public enum GameStage {
 
-    LOBBY, IN_GAME, POST_GAME
+    LOBBY, PRE_GAME, IN_GAME, POST_GAME
 }
