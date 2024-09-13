@@ -2,8 +2,10 @@ package club.devcord.gamejam;
 
 
 import club.devcord.gamejam.logic.Game;
-import de.chojo.pluginjam.PluginJam;
-import de.chojo.pluginjam.serverapi.ServerApi;
+import club.devcord.gamejam.message.Messenger;
+import club.devcord.gamejam.stage.common.listener.PlayerJoinListener;
+import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
+import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CursedBedwarsPlugin extends JavaPlugin {
@@ -12,11 +14,16 @@ public class CursedBedwarsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        ServerApi api = getPlugin(PluginJam.class).api();
         // api.requestRestart();
 
         this.messenger = new Messenger(getServer());
         this.game = new Game(this);
+        var pluginManager = this.getServer().getPluginManager();
+
+        // Listeners
+        pluginManager.registerEvents(new PlayerJoinListener(this), this);
+        pluginManager.registerEvents(new InventoryInteractListener(this), this);
+        pluginManager.registerEvents(new PlayerInteractListener(this), this);
     }
 
     @Override

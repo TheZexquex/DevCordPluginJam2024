@@ -1,9 +1,13 @@
 package club.devcord.gamejam.logic;
 
 import club.devcord.gamejam.CursedBedwarsPlugin;
-import club.devcord.gamejam.Messenger;
+import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.timer.Countdown;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -15,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class Game {
     private GameStage gameStage;
     private final CursedBedwarsPlugin plugin;
-    private final HashMap<Team.Color, Team> teams = new HashMap<>();
+    private final HashMap<NamedTextColor, Team> teams = new HashMap<>();
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
 
@@ -25,15 +29,25 @@ public class Game {
         this.gameStage = GameStage.LOBBY;
         this.plugin = plugin;
 
-        teams.put(Team.Color.RED, new Team());
-        teams.put(Team.Color.GREEN, new Team());
-        teams.put(Team.Color.BLUE, new Team());
-        teams.put(Team.Color.YELLOW, new Team());
-        teams.put(Team.Color.SPECTATOR, new Team());
+        teams.put(NamedTextColor.RED, new Team());
+        teams.put(NamedTextColor.GREEN, new Team());
+        teams.put(NamedTextColor.BLUE, new Team());
+        teams.put(NamedTextColor.YELLOW, new Team());
+
+        // Spectator Team
+        teams.put(NamedTextColor.GRAY, new Team());
 
         this.scoreboardManager = plugin.getServer().getScoreboardManager();
-        this.scoreboardManager = scoreboardManager.getNewScoreboard()
+        this.teamsScoreboard = scoreboardManager.getNewScoreboard();
 
+        for (NamedTextColor teamColor : teams.keySet()) {
+            teamsScoreboard.registerNewTeam(teamColor.toString());
+            var team = teamsScoreboard.getTeam(teamColor.toString());
+            if (team != null) {
+                team.prefix(Component.text(teamColor.toString() + " | "));
+                team.color(teamColor);
+            }
+        }
     }
 
     public void startGameCountDown() {
@@ -42,10 +56,13 @@ public class Game {
         countdown.start(30, TimeUnit.SECONDS, (second) -> {
             plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
             plugin.getServer().getOnlinePlayers().forEach(player -> {
-                //player.playSound(Sound.sound());
+                player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
             });
         }, () ->{
             startGame();
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
+            });
             plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet");
         });
     }
@@ -58,7 +75,7 @@ public class Game {
         return gameStage;
     }
 
-    public void switchPlayerToTeam(Player player, Team.Color color) {
+    public void switchPlayerToTeam(Player player, NamedTextColor color) {
         var teamOpt = getTeamColor(player);
         teamOpt.ifPresent(team -> team.teamPlayers().remove(player));
 
@@ -66,7 +83,7 @@ public class Game {
 
     }
 
-    public boolean isPlayerInTeam(Player player, Team.Color color) {
+    public boolean isPlayerInTeam(Player player, NamedTextColor color) {
         return teams.get(color).teamPlayers().contains(player);
     }
 
