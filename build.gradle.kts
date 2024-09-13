@@ -1,4 +1,3 @@
-import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -11,7 +10,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.1"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("io.papermc.paperweight.userdev") version "1.7.2"
+    //id("io.papermc.paperweight.userdev") version "1.7.2"
 }
 
 repositories {
@@ -25,17 +24,16 @@ group = "club.devcord.gamejam"
 version = "1.0.0"
 description = "gamejam"
 
+val shadeBasePath = "${group}.libs."
+
 dependencies {
-    implementation("xyz.xenondevs.invui:invui:1.37")
+    implementation("xyz.xenondevs.invui:invui:1.33")
     bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
 
     testImplementation("junit:junit:4.13.2")
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    //paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("de.chojo.pluginjam:plugin-paper:1.0.3")
-}
-
-paperweight {
-    reobfArtifactConfiguration = ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 java {
@@ -43,6 +41,7 @@ java {
         languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
+
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -55,12 +54,17 @@ tasks {
         options.encoding = "UTF-8"
     }
 
+    shadowJar {
+        relocate("xyz.xenondevs.invui", shadeBasePath + "xyz.xenondevs.invui")
+    }
+
     runServer {
+        dependsOn(shadowJar)
         minecraftVersion("1.21.1")
     }
 
     register("uploadJar") {
-        dependsOn(jar)
+        dependsOn(shadowJar)
 
         doLast {
             val filePath = project.tasks.jar.get().archiveFile.get().asFile.toPath()
@@ -85,6 +89,6 @@ bukkit {
     name = "CursedBedwars"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     main = "club.devcord.gamejam.CursedBedwarsPlugin"
-    apiVersion = "1.21"
+    apiVersion = "1.20"
     loadBefore = listOf("PluginJam")
 }

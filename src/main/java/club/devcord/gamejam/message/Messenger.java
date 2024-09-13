@@ -1,4 +1,4 @@
-package club.devcord.gamejam;
+package club.devcord.gamejam.message;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Server;
