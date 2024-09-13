@@ -14,6 +14,9 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        var player = event.getPlayer();
+        player.teleport(plugin.game().gameMap().getBukkitWorld().getSpawnLocation());
+
         switch (plugin.game().gameStage()) {
             case LOBBY -> {
                 plugin.game().switchPlayerToTeam(PL);

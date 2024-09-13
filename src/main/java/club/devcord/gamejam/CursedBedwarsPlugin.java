@@ -9,19 +9,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CursedBedwarsPlugin extends JavaPlugin {
     private Game game;
     private Messenger messenger;
+    private ServerApi serverApi;
 
     @Override
     public void onEnable() {
-        ServerApi api = getPlugin(PluginJam.class).api();
-        // api.requestRestart();
-
+        this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
         this.game = new Game(this);
     }
 
     @Override
     public void onDisable() {
-
+        game.tearDown();
     }
 
     public Messenger messenger() {
@@ -30,5 +29,9 @@ public class CursedBedwarsPlugin extends JavaPlugin {
 
     public Game game() {
         return game;
+    }
+
+    public ServerApi serverApi() {
+        return serverApi;
     }
 }

@@ -83,7 +83,8 @@ tasks {
 
 bukkit {
     name = "CursedBedwars"
-    load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
+    load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     main = "club.devcord.gamejam.CursedBedwarsPlugin"
     apiVersion = "1.21"
+    loadBefore = listOf("PluginJam")
 }
