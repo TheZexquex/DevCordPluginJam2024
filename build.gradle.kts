@@ -55,6 +55,8 @@ tasks {
     }
 
     shadowJar {
+        archiveClassifier = ""
+
         relocate("xyz.xenondevs.invui", shadeBasePath + "xyz.xenondevs.invui")
     }
 
