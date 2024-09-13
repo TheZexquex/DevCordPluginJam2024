@@ -63,10 +63,12 @@ public class Game {
         var countdown = new Countdown();
 
         countdown.start(30, TimeUnit.SECONDS, (second) -> {
-            plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
-            plugin.getServer().getOnlinePlayers().forEach(player -> {
-                player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
-            });
+            if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
+                plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
+                    player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
+                });
+            }
         }, () ->{
             startGame();
             plugin.getServer().getOnlinePlayers().forEach(player -> {
