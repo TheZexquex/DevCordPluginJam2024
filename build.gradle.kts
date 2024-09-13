@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://eldonexus.de/repository/maven-releases/")
+    maven("https://repo.xenondevs.xyz/releases")
 }
 
 group = "club.devcord.gamejam"
@@ -25,6 +26,9 @@ version = "1.0.0"
 description = "gamejam"
 
 dependencies {
+    implementation("xyz.xenondevs.invui:invui:1.37")
+    bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
+
     testImplementation("junit:junit:4.13.2")
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     compileOnly("de.chojo.pluginjam:plugin-paper:1.0.3")
@@ -78,8 +82,8 @@ tasks {
 }
 
 bukkit {
-    name = "GameJamPlugin"
+    name = "CursedBedwars"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.STARTUP
-    main = "club.devcord.gamejam.JamPlugin"
+    main = "club.devcord.gamejam.CursedBedwarsPlugin"
     apiVersion = "1.21"
 }
