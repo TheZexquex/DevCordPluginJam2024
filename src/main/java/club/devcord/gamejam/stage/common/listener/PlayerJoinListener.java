@@ -27,6 +27,7 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
 
+        player.teleport(plugin.game().gameMap().getBukkitWorld().getSpawnLocation());
         player.getInventory().clear();
 
         switch (plugin.game().gameStage()) {

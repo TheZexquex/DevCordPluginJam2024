@@ -29,6 +29,7 @@ val shadeBasePath = "${group}.libs."
 dependencies {
     implementation("xyz.xenondevs.invui:invui:1.33")
     bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
+    bukkitLibrary("org.apache.commons:commons-lang3:3.17.0")
 
     testImplementation("junit:junit:4.13.2")
     //paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
@@ -90,4 +91,5 @@ bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     main = "club.devcord.gamejam.CursedBedwarsPlugin"
     apiVersion = "1.20"
+    loadBefore = listOf("PluginJam")
 }
