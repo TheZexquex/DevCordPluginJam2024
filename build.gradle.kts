@@ -55,6 +55,8 @@ tasks {
     }
 
     shadowJar {
+        archiveClassifier = ""
+
         relocate("xyz.xenondevs.invui", shadeBasePath + "xyz.xenondevs.invui")
     }
 
@@ -67,7 +69,7 @@ tasks {
         dependsOn(shadowJar)
 
         doLast {
-            val filePath = project.tasks.jar.get().archiveFile.get().asFile.toPath()
+            val filePath = project.tasks.shadowJar.get().archiveFile.get().asFile.toPath()
             // Add the upload api url to your repo secrets under UPLOAD_URL
             // Obtain the upload url via /team api
             val apiUrl = System.getenv("UPLOAD_URL") ?: throw RuntimeException("Please set UPLOAD_URL in your github secrets")

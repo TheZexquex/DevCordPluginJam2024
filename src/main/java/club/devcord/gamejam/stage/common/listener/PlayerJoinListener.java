@@ -38,7 +38,7 @@ public class PlayerJoinListener implements Listener {
                 event.joinMessage(Component.empty());
                 plugin.messenger().broadCast(Messenger.PREFIX + "<yellow>" + player.getName() + " <gray>hat das Spiel betreten");
 
-                if (plugin.getServer().getOnlinePlayers().size() >= GameSettings.MIN_PLAYERS) {
+                if (plugin.getServer().getOnlinePlayers().size() == GameSettings.MIN_PLAYERS) {
                     plugin.game().startGameCountDown();
                 }
                 var teamSelectItem = new ItemBuilder(Material.RED_BED)
