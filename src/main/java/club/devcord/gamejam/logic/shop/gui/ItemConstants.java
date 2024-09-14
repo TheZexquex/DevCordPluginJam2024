@@ -27,13 +27,11 @@ public class ItemConstants {
     }
 
     public static ItemStack wool(NamedTextColor color) {
-        var material = Material.valueOf(color.toString() .toUpperCase() + "_WOOL");
-
+        var material = Material.valueOf(color.toString().toUpperCase() + "_WOOL");
         var itemStack = new ItemStack(material);
         var itemMeta = itemStack.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(GAME_ITEM_TYPE, PersistentDataType.STRING, Type.WOOL.name());
-        itemStack.setAmount(16);
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;

@@ -4,7 +4,9 @@ package club.devcord.gamejam;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.stage.common.listener.*;
+import club.devcord.gamejam.stage.ingame.listener.BlockPlaceListener;
 import club.devcord.gamejam.stage.ingame.listener.NaturalHealthRegenerationListener;
+import club.devcord.gamejam.stage.ingame.listener.ProjectileHitListener;
 import club.devcord.gamejam.stage.lobby.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
@@ -35,6 +37,8 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(this), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
+        pluginManager.registerEvents(new BlockPlaceListener(), this);
+        pluginManager.registerEvents(new ProjectileHitListener(), this);
     }
 
     @Override
