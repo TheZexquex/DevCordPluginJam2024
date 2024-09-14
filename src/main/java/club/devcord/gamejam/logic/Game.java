@@ -41,6 +41,7 @@ public class Game {
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
+    private Countdown lobbyCountdown;
     private Stopwatch actionBarInfoStopWatch;
 
     public Game(CursedBedwarsPlugin plugin) {
@@ -81,12 +82,16 @@ public class Game {
         gameMap.bukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         gameMap.bukkitWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
+        sendPreCountdownActionbar();
+    }
+
+    public void sendPreCountdownActionbar() {
         this.actionBarInfoStopWatch = new Stopwatch();
 
         actionBarInfoStopWatch.start(1, TimeUnit.SECONDS, duration -> {}, duration -> {
             var dots = ".".repeat((int) (duration.getSeconds() % 4));
             var message = MiniMessage.miniMessage().deserialize(
-                    "<gray>Warten" + dots + " (<yellow><online><gray>/<yellow><required><gray>)",
+                    "<gray>Warten auf Spieler" + dots + " (<yellow><online><gray>/<yellow><required><gray>)",
                     Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
                     Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)));
 
@@ -96,9 +101,9 @@ public class Game {
 
     public void startGameCountDown() {
         actionBarInfoStopWatch.abort();
-        var countdown = new Countdown();
+        lobbyCountdown = new Countdown();
 
-        countdown.start(30, TimeUnit.SECONDS, (second) -> {
+        lobbyCountdown.start(30, TimeUnit.SECONDS, (second) -> {
             if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
                 plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
@@ -230,6 +235,10 @@ public class Game {
 
     public @NotNull Scoreboard teamsScoreBoard() {
         return teamsScoreboard;
+    }
+
+    public Countdown lobbyCountdown() {
+        return lobbyCountdown;
     }
 
     public Set<Player> spectators() {
