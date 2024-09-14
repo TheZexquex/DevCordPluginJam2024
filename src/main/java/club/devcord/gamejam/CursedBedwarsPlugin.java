@@ -2,28 +2,34 @@ package club.devcord.gamejam;
 
 
 import club.devcord.gamejam.logic.Game;
+import club.devcord.gamejam.logic.spawner.ItemSpawnScheduler;
 import club.devcord.gamejam.message.Messenger;
+import club.devcord.gamejam.stage.common.listener.EntityDamageListener;
 import club.devcord.gamejam.stage.common.listener.FoodLevelChangeListener;
 import club.devcord.gamejam.stage.common.listener.PlayerJoinListener;
-import club.devcord.gamejam.stage.common.listener.EntityDamageListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
-import de.chojo.pluginjam.PluginJam;
-import de.chojo.pluginjam.serverapi.ServerApi;
+//import de.chojo.pluginjam.PluginJam;
+//import de.chojo.pluginjam.serverapi.ServerApi;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CursedBedwarsPlugin extends JavaPlugin {
     private Game game;
     private Messenger messenger;
-    private ServerApi serverApi;
+    //private ServerApi serverApi;
 
     @Override
     public void onEnable() {
-        this.serverApi = getPlugin(PluginJam.class).api();
+        //this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
-        this.game = new Game(this);
 
         registerListeners();
+
+        Bukkit.getScheduler().runTask(this, () -> {
+            this.game = new Game(this);
+            new ItemSpawnScheduler(this);
+        });
     }
 
     private void registerListeners() {
@@ -48,7 +54,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         return game;
     }
 
-    public ServerApi serverApi() {
-        return serverApi;
-    }
+    //public ServerApi serverApi() {
+    //    return serverApi;
+    //}
 }
