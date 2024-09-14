@@ -1,5 +1,6 @@
 package club.devcord.gamejam.logic;
 
+import club.devcord.gamejam.generator.VoidGenerator;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,7 +24,7 @@ public class GameMap {
             // Do nothing
         }
 
-        this.bukkitWorld = Bukkit.createWorld(WorldCreator.name("game"));
+        this.bukkitWorld = Bukkit.createWorld(WorldCreator.name("game").generator(new VoidGenerator()));
     }
 
     public World bukkitWorld() {
