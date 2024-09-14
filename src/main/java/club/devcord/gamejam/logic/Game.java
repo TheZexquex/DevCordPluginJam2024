@@ -1,16 +1,18 @@
 package club.devcord.gamejam.logic;
 
 import club.devcord.gamejam.CursedBedwarsPlugin;
-import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.logic.team.Team;
+import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.timer.Countdown;
-import club.devcord.gamejam.utils.FileUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -29,8 +31,6 @@ public class Game {
     private Scoreboard teamsScoreboard;
 
     private final Team spectatorTeam = new Team();
-
-    private boolean isShuttingDown;
 
     public Game(CursedBedwarsPlugin plugin) {
         this.gameStage = GameStage.LOBBY;
@@ -69,28 +69,38 @@ public class Game {
                     player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
                 });
             }
-        }, () ->{
-            startGame();
+        }, () -> {
+            Bukkit.getScheduler().runTask(plugin, this::startGame);
+
             plugin.getServer().getOnlinePlayers().forEach(player -> {
                 player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
             });
+
             plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet");
         });
     }
 
     public void startGame() {
         this.gameStage = GameStage.IN_GAME;
+
+        gameMap.bukkitWorld().getEntities().stream()
+                .filter(entity -> entity.getType() == EntityType.ITEM)
+                .forEach(Entity::remove);
     }
 
     public void tearDown() {
-        if (isShuttingDown) return;
-        isShuttingDown = true;
-
-        World world = gameMap.getBukkitWorld();
+        World world = gameMap.bukkitWorld();
 
         Bukkit.unloadWorld(world, false);
-        FileUtils.deleteDirectory(world.getWorldFolder());
-        plugin.serverApi().requestRestart();
+
+        try {
+            FileUtils.deleteDirectory(world.getWorldFolder());
+        } catch (IOException ignored) {
+            // Not much we can do
+        }
+
+        Bukkit.shutdown();
+        // plugin.serverApi().requestRestart();
     }
 
     public GameStage gameStage() {

@@ -32,8 +32,8 @@ dependencies {
     implementation("io.github.juliarn", "npc-lib-bukkit", "3.0.0-beta9")
     implementation("commons-io:commons-io:2.16.1")
     bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
+    bukkitLibrary("commons-io:commons-io:2.16.1")
 
-    testImplementation("junit:junit:4.13.2")
     compileOnly("com.github.retrooper:packetevents-spigot:2.4.0")
     //paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
@@ -43,13 +43,6 @@ dependencies {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
-
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
     }
 }
 
@@ -68,6 +61,7 @@ tasks {
     runServer {
         dependsOn(shadowJar)
         minecraftVersion("1.21.1")
+
         downloadPlugins {
             url("https://ci.mg-dev.eu/job/BKCommonLib/lastBuild/artifact/build/BKCommonLib-1.21.1-v1-SNAPSHOT-1793.jar")
             url("https://ci.mg-dev.eu/job/MyWorlds/lastBuild/artifact/target/MyWorlds-1.21.1-v1-SNAPSHOT-311.jar")
@@ -101,5 +95,4 @@ bukkit {
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     main = "club.devcord.gamejam.CursedBedwarsPlugin"
     apiVersion = "1.20"
-    loadBefore = listOf("PluginJam")
 }
