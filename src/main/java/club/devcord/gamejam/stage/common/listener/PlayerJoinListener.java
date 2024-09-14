@@ -38,6 +38,17 @@ public class PlayerJoinListener implements Listener {
         player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(Bukkit.getWorld("game")));
         player.getInventory().clear();
 
+        player.setScoreboard(plugin.game().teamsScoreBoard());
+
+        if (plugin.getServer().getOnlinePlayers().size() == 1) {
+            plugin.game().setupNPCs();
+        }
+
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            plugin.game().shopNPC().spawnForPlayer(player);
+        });
+
+
         switch (plugin.game().gameStage()) {
             case LOBBY -> {
                 player.setGameMode(GameMode.SURVIVAL);
@@ -63,7 +74,7 @@ public class PlayerJoinListener implements Listener {
             default -> {
                 plugin.game().switchPlayerToTeam(player, NamedTextColor.GRAY);
                 player.setGameMode(GameMode.SPECTATOR);
-                player.sendRichMessage(Messenger.PREFIX + "<grey>Das Spiel hat begonnen, du bist Beobachter!");
+                player.sendRichMessage(Messenger.PREFIX + "<grey>Das Spiel hat bereits begonnen, du bist Beobachter!");
             }
         }
     }

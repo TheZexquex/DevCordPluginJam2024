@@ -24,6 +24,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         //this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
         this.game = new Game(this);
+        game.startLobbyPhase();
 
         registerListeners();
     }

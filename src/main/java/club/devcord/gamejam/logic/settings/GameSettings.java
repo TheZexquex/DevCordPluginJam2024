@@ -1,7 +1,6 @@
 package club.devcord.gamejam.logic.settings;
 
 import club.devcord.gamejam.utils.RelativeLocation;
-import com.github.juliarn.npclib.api.Position;
 
 import java.time.Duration;
 import java.util.Set;
@@ -12,8 +11,11 @@ public class GameSettings {
 
     public static RelativeLocation SPAWN_LOCATION = new RelativeLocation(0, 118, 0);
 
-    public static final Set<Position> SHOP_LOCATIONS = Set.of(
-            Position.position(-79.0, 66.0, 6.0, "world")
+    public static final Set<RelativeLocation> SHOP_LOCATIONS = Set.of(
+           new RelativeLocation(-6, 66, -80),
+           new RelativeLocation(6, 66, 80),
+           new RelativeLocation(80, 66, -6),
+           new RelativeLocation(-80, 66, 6)
     );
   
     public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(500);
