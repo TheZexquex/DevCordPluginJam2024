@@ -6,6 +6,7 @@ import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
 
-        player.teleport(plugin.game().gameMap().bukkitWorld().getSpawnLocation());
+        player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(Bukkit.getWorld("game")));
         player.getInventory().clear();
 
         player.setScoreboard(plugin.game().teamsScoreBoard());
