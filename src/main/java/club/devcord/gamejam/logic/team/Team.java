@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Team {
-
     private final Set<Player> teamPlayers = new HashSet<>();
 
     public Set<Player> teamPlayers() {

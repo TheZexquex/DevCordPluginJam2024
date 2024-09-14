@@ -28,6 +28,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
 
         Bukkit.getScheduler().runTask(this, () -> {
             this.game = new Game(this);
+            game.startLobbyPhase();
             new ItemSpawnScheduler(this);
         });
     }

@@ -3,6 +3,7 @@ package club.devcord.gamejam.logic.shop.gui;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.utils.InventoryUtil;
 import club.devcord.gamejam.utils.KeyValue;
+import club.devcord.gamejam.utils.MiniComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -10,15 +11,26 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import xyz.xenondevs.invui.item.ItemProvider;
+import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 
 public class ShopBuyItem extends SimpleItem {
     private ItemStack resultItem;
     private KeyValue<ItemStack, Integer> price;
-    public ShopBuyItem(@NotNull ItemProvider itemProvider, ItemStack resultItem, KeyValue<ItemStack, Integer> price) {
+    public ShopBuyItem(@NotNull ItemProvider itemProvider, KeyValue<ItemStack, Integer> price) {
         super(itemProvider);
-        this.resultItem = resultItem;
+        this.resultItem = itemProvider.get();
         this.price = price;
+    }
+
+    @Override
+    public ItemProvider getItemProvider() {
+        return new ItemBuilder(resultItem).addLoreLines(MiniComponent.of(""), MiniComponent.of(
+                " <gray>Für <yellow>" +
+                        price.value() + "x " +
+                        price.key().getType().name() +
+                        " <gray>kaufen"
+        ));
     }
 
     @Override
