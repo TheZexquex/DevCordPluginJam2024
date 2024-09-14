@@ -1,8 +1,6 @@
 package club.devcord.gamejam.logic.shop.gui;
 
-import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.utils.KeyValue;
-import club.devcord.gamejam.utils.MiniComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -22,10 +20,6 @@ import java.util.List;
 public class ShopGUI {
     public void open(Player player, NamedTextColor teamColor) {
         var border = new SimpleItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayName(""));
-
-        if (teamColor == NamedTextColor.GRAY) {
-            return;
-        }
 
         List<Item> items = List.of(
                 new ShopBuyItem(

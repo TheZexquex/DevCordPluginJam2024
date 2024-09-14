@@ -1,10 +1,10 @@
 package club.devcord.gamejam.logic.team.gui;
 
 import club.devcord.gamejam.logic.Game;
+import club.devcord.gamejam.logic.team.TeamColor;
 import club.devcord.gamejam.message.Messenger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -13,10 +13,10 @@ import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 
 public class TeamSelectItem extends SimpleItem {
-    private final NamedTextColor teamColor;
+    private final TeamColor teamColor;
     private final Game game;
 
-    public TeamSelectItem(@NotNull ItemProvider itemProvider, NamedTextColor teamColor, Game game) {
+    public TeamSelectItem(@NotNull ItemProvider itemProvider, TeamColor teamColor, Game game) {
         super(itemProvider);
         this.teamColor = teamColor;
         this.game = game;
@@ -25,7 +25,7 @@ public class TeamSelectItem extends SimpleItem {
     @Override
     public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
         super.handleClick(clickType, player, event);
-        game.switchPlayerToTeam(player, teamColor);
+        game.switchPlayerToTeam(player, game.getTeamFromColor(teamColor));
         player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team: <" + teamColor.toString() + ">"  + teamColor.toString());
         player.closeInventory();
         player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));

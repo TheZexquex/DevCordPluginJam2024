@@ -4,6 +4,7 @@ import club.devcord.gamejam.CursedBedwarsPlugin;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.shop.ShopNPC;
 import club.devcord.gamejam.logic.team.Team;
+import club.devcord.gamejam.logic.team.TeamColor;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.timer.Countdown;
 import club.devcord.gamejam.timer.Stopwatch;
@@ -12,7 +13,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.io.FileUtils;
@@ -28,17 +28,14 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
     private final CursedBedwarsPlugin plugin;
     private GameStage gameStage;
     private GameMap gameMap;
-    private final HashMap<NamedTextColor, Team> teams = new HashMap<>();
+    private final Set<Team> teams = new HashSet<>();
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
@@ -50,25 +47,23 @@ public class Game {
     }
 
     public void startLobbyPhase() {
-        teams.put(NamedTextColor.RED, new Team(RelativeLocation.of(79.5, 66, 0.5, 90, 0)));
-        teams.put(NamedTextColor.GREEN, new Team(RelativeLocation.of(-78.5, 66, 0.5, -90, 0)));
-        teams.put(NamedTextColor.BLUE, new Team(RelativeLocation.of(0.5, 66, 79.5, 180, 0)));
-        teams.put(NamedTextColor.YELLOW, new Team(RelativeLocation.of(0.5, 66, -78.5, 0, 0)));
-
-        // Spectator Team
-        teams.put(NamedTextColor.GRAY, new Team(GameSettings.SPAWN_LOCATION));
+        teams.add(new Team(TeamColor.RED, RelativeLocation.of(79.5, 66, 0.5, 90, 0)));
+        teams.add(new Team(TeamColor.GREEN, RelativeLocation.of(-78.5, 66, 0.5, -90, 0)));
+        teams.add(new Team(TeamColor.BLUE, RelativeLocation.of(0.5, 66, 79.5, 180, 0)));
+        teams.add(new Team(TeamColor.YELLOW, RelativeLocation.of(0.5, 66, -78.5, 0, 0)));
 
         this.scoreboardManager = plugin.getServer().getScoreboardManager();
         this.teamsScoreboard = scoreboardManager.getNewScoreboard();
 
-        for (NamedTextColor teamColor : teams.keySet()) {
-            var team = teamsScoreboard.registerNewTeam(teamColor.toString());
-            team.prefix(Component.text("").color(NamedTextColor.GRAY)
+        for (var team : teams) {
+            var teamColor = team.teamColor();
+            var scoreboardTeam = teamsScoreboard.registerNewTeam(teamColor.toString());
+            scoreboardTeam.prefix(Component.text("").color(NamedTextColor.GRAY)
                     .append(Component.text("[").color(NamedTextColor.GRAY))
-                    .append(Component.text(String.valueOf(teamColor.toString().charAt(0)).toUpperCase())).color(teamColor)
+                    .append(Component.text(String.valueOf(teamColor.toString().charAt(0)).toUpperCase())).color(teamColor.textColor())
                     .append(Component.text("] ").color(NamedTextColor.GRAY)));
-            team.color(teamColor);
-            team.setAllowFriendlyFire(false);
+            scoreboardTeam.color(teamColor.textColor());
+            scoreboardTeam.setAllowFriendlyFire(false);
         }
 
         this.gameMap = new GameMap();
@@ -152,9 +147,10 @@ public class Game {
                 .filter(entity -> entity.getType() == EntityType.ITEM)
                 .forEach(Entity::remove);
 
-        teams.values().forEach(team -> {
+        teams.forEach(team -> {
             team.teamPlayers().forEach(player -> {
                 player.teleport(team.spawnLocation().toBukkitLocation(Bukkit.getWorld("game")));
+                player.setGlowing(false);
             });
         });
     }
@@ -167,21 +163,13 @@ public class Game {
                 });
     }
 
-    private NamedTextColor findSmallestTeam() {
-        var shuffledTeams = new ArrayList<>(teams.entrySet());
+    private Team findSmallestTeam() {
+        var shuffledTeams = new ArrayList<>(teams);
         Collections.shuffle(shuffledTeams);
 
-        int smallestSize = Integer.MAX_VALUE;
-        NamedTextColor smallestTeam = null;
-        for (var team : shuffledTeams) {
-            var teamSize = team.getValue().teamPlayers().size();
-            if (smallestSize > teamSize) {
-                smallestSize = teamSize;
-                smallestTeam = team.getKey();
-            }
-        }
-
-        return smallestTeam;
+        return shuffledTeams.stream()
+                .min(Comparator.comparingInt(team -> team.teamPlayers().size()))
+                .orElse(null); // Never null
     }
 
     public void tearDown() {
@@ -209,16 +197,17 @@ public class Game {
         return gameMap;
     }
 
-    public void switchPlayerToTeam(Player player, NamedTextColor color) {
+    public void switchPlayerToTeam(Player player, Team newTeam) {
         clearTeam(player);
 
-        var newSbTeam = teamsScoreboard.getTeam(color.toString());
+        var newSbTeam = teamsScoreboard.getTeam(newTeam.teamColor().toString());
         newSbTeam.addPlayer(player);
 
-        var newTeam = teams.get(color);
         newTeam.teamPlayers().add(player);
 
-        player.setGlowing(true);
+        if (gameStage != GameStage.IN_GAME) {
+            player.setGlowing(true);
+        }
     }
 
     public void clearTeam(Player player) {
@@ -236,20 +225,16 @@ public class Game {
         shopNPC.create(this);
     }
 
-    public boolean isPlayerInTeam(Player player, NamedTextColor color) {
-        return teams.get(color).teamPlayers().contains(player);
-    }
-
     public boolean isPlayerInAnyTeam(Player player) {
-        return teams.keySet().stream().anyMatch(color -> isPlayerInTeam(player, color));
+        return teams.stream().anyMatch(team -> team.teamPlayers().contains(player));
     }
 
     public Optional<Team> getTeam(Player player) {
-        return teams.values().stream().filter(color -> color.teamPlayers().contains(player)).findFirst();
+        return teams.stream().filter(team -> team.teamPlayers().contains(player)).findFirst();
     }
 
-    public Optional<NamedTextColor> getTeamColor(Player player) {
-        return teams.keySet().stream().filter(namedTextColor -> teams.get(namedTextColor).teamPlayers().contains(player)).findFirst();
+    public Team getTeamFromColor(TeamColor teamColor) {
+        return teams.stream().filter(team -> team.teamColor() == teamColor).findAny().orElse(null); // Never null
     }
 
     public ShopNPC shopNPC() {

@@ -8,7 +8,6 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.utils.SkinFetcher;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -28,8 +27,8 @@ public class ShopNPC {
             data.setDisplayName("<gray>⚖ <dark_gray>| <#eba834>Shop");
             data.setTurnToPlayer(true);
             data.setOnClick(player -> {
-                game.getTeamColor(player).ifPresent(color -> {
-                    new ShopGUI().open(player, color);
+                game.getTeam(player).ifPresent(team -> {
+                    new ShopGUI().open(player, team.teamColor().textColor());
                 });
             });
 

@@ -2,7 +2,6 @@ package club.devcord.gamejam.stage.common.listener;
 
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.message.Messenger;
-import com.mojang.brigadier.Command;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
@@ -21,13 +20,13 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         var player = event.getPlayer();
-        var teamColorOptional = game.getTeamColor(player);
+        var teamOptional = game.getTeam(player);
 
         game.clearTeam(player);
 
         var teamColor = NamedTextColor.DARK_AQUA;
-        if (teamColorOptional.isPresent()) {
-            teamColor = teamColorOptional.get();
+        if (teamOptional.isPresent()) {
+            teamColor = teamOptional.get().teamColor().textColor();
         }
 
         event.quitMessage(Component.empty());

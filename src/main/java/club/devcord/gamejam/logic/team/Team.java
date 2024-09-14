@@ -7,11 +7,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Team {
-    private final Set<Player> teamPlayers = new HashSet<>();
+    private final TeamColor teamColor;
     private final RelativeLocation spawnLocation;
+    private final Set<Player> teamPlayers;
 
-    public Team(RelativeLocation spawnLocation) {
+    public Team(TeamColor teamColor, RelativeLocation spawnLocation) {
+        this.teamColor = teamColor;
         this.spawnLocation = spawnLocation;
+        this.teamPlayers = new HashSet<>();
+    }
+
+    public TeamColor teamColor() {
+        return teamColor;
     }
 
     public Set<Player> teamPlayers() {
