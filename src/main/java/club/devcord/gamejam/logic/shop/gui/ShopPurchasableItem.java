@@ -49,11 +49,13 @@ public abstract class ShopPurchasableItem extends SimpleItem {
         super.handleClick(clickType, player, event);
 
         if (InventoryUtil.hasNoSpaceInInventory(player)) {
+            player.playSound(Sound.sound(Key.key("entity.villager.no"), Sound.Source.MASTER, 1.0F, 1.0F));
             player.sendRichMessage(Messenger.PREFIX + "<red>Du hast keinen Platz im Inventar");
             return;
         }
 
         if (!InventoryUtil.hasEnoughItems(player, price.key(), price.value())) {
+            player.playSound(Sound.sound(Key.key("entity.villager.no"), Sound.Source.MASTER, 1.0F, 1.0F));
             player.sendRichMessage(Messenger.PREFIX + "<red>Du hast nicht genügend <yellow>" + StringUtils.capitalizeEnumConstant(price.key().getType().name()));
             return;
         }
