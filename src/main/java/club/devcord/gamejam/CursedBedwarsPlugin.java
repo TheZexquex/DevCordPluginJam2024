@@ -7,6 +7,7 @@ import club.devcord.gamejam.stage.common.listener.*;
 import club.devcord.gamejam.stage.ingame.listener.NaturalHealthRegenerationListener;
 import club.devcord.gamejam.stage.lobby.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
+import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,6 +36,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(this), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
+        pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
     }
 
     @Override
