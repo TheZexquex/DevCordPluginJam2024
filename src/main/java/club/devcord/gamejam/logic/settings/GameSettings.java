@@ -12,10 +12,10 @@ public class GameSettings {
     public static RelativeLocation SPAWN_LOCATION = RelativeLocation.of(0, 118, 0);
 
     public static final Set<RelativeLocation> SHOP_LOCATIONS = Set.of(
-           RelativeLocation.of(-5, 66, -78),
-           RelativeLocation.of(6, 66, 79),
-           RelativeLocation.of(79, 66, -5),
-           RelativeLocation.of(-78, 66, 6)
+           RelativeLocation.of(-5.5, 66, -78.5),
+           RelativeLocation.of(6.5, 66, 79.5),
+           RelativeLocation.of(79.5, 66, -5.5),
+           RelativeLocation.of(-78.5, 66, 6.5)
     );
   
     public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(500);
@@ -23,21 +23,21 @@ public class GameSettings {
     public static final Duration DIAMOND_SPAWN_DELAY = Duration.ofSeconds(30);
 
     public static final Set<RelativeLocation> IRON_SPAWN_LOCATIONS = Set.of(
-            RelativeLocation.of(-82, 66, 0),
-            RelativeLocation.of(83, 66, 0),
-            RelativeLocation.of(0, 66, 83),
-            RelativeLocation.of(0, 66, -82)
+            RelativeLocation.of(-82.5, 66, 0.5),
+            RelativeLocation.of(83.5, 66, 0.5),
+            RelativeLocation.of(0.5, 66, 83.5),
+            RelativeLocation.of(0.5, 66, -82.5)
     );
 
     public static final Set<RelativeLocation> GOLD_SPAWN_LOCATIONS = Set.of(
-            RelativeLocation.of(31, 68, 29),
-            RelativeLocation.of(-30, 68, -28),
-            RelativeLocation.of(29, 68, -30),
-            RelativeLocation.of(-28, 68, 31)
+            RelativeLocation.of(31.5, 68, 29.5),
+            RelativeLocation.of(-30.5, 68, -28.5),
+            RelativeLocation.of(29.5, 68, -30.5),
+            RelativeLocation.of(-28.5, 68, 31.5)
     );
 
     public static final Set<RelativeLocation> DIAMOND_SPAWN_LOCATIONS = Set.of(
-            RelativeLocation.of(8, 72, 12),
-            RelativeLocation.of(-7, 72, -11)
+            RelativeLocation.of(8.5, 72.5, 12.5),
+            RelativeLocation.of(-7.5, 72.5, -11.5)
     );
 }

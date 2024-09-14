@@ -50,10 +50,10 @@ public class Game {
     }
 
     public void startLobbyPhase() {
-        teams.put(NamedTextColor.RED, new Team(RelativeLocation.of(79, 66, 0, 90, 0)));
-        teams.put(NamedTextColor.GREEN, new Team(RelativeLocation.of(-78, 66, 0, -90, 0)));
-        teams.put(NamedTextColor.BLUE, new Team(RelativeLocation.of(0, 66, 79, 180, 0)));
-        teams.put(NamedTextColor.YELLOW, new Team(RelativeLocation.of(0, 66, -78, 0, 0)));
+        teams.put(NamedTextColor.RED, new Team(RelativeLocation.of(79.5, 66, 0.5, 90, 0)));
+        teams.put(NamedTextColor.GREEN, new Team(RelativeLocation.of(-78.5, 66, 0.5, -90, 0)));
+        teams.put(NamedTextColor.BLUE, new Team(RelativeLocation.of(0.5, 66, 79.5, 180, 0)));
+        teams.put(NamedTextColor.YELLOW, new Team(RelativeLocation.of(0.5, 66, -78.5, 0, 0)));
 
         // Spectator Team
         teams.put(NamedTextColor.GRAY, new Team(GameSettings.SPAWN_LOCATION));
@@ -72,6 +72,12 @@ public class Game {
         }
 
         this.gameMap = new GameMap();
+
+        GameSettings.SHOP_LOCATIONS.forEach(relativeLocation -> {
+            var location = relativeLocation.toBukkitLocation(gameMap.bukkitWorld());
+
+            location.getChunk().setForceLoaded(true);
+        });
 
         gameMap.bukkitWorld().setDifficulty(Difficulty.PEACEFUL);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);

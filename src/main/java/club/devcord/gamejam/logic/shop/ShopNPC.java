@@ -21,7 +21,7 @@ public class ShopNPC {
     public void create(Game game) {
         int i = GameSettings.SHOP_LOCATIONS.size();
         for (RelativeLocation position : GameSettings.SHOP_LOCATIONS) {
-            var location = new Location(game.gameMap().bukkitWorld(), position.x(), position.y(), position.z());
+            var location = position.toBukkitLocation(game.gameMap().bukkitWorld());
             var data = new NpcData("shop-" + i, UUID.randomUUID(), location);
             var skin = new SkinFetcher("https://cdn.thezexquex.dev/s/q7AstaB2nCeHacd/download/merchant-skin.png");
             data.setSkin(skin);
