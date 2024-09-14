@@ -36,6 +36,8 @@ public class Game {
     private GameStage gameStage;
     private GameMap gameMap;
     private final Set<Team> teams = new HashSet<>();
+    private final Set<Player> spectators = new HashSet<>();
+
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
@@ -243,5 +245,9 @@ public class Game {
 
     public @NotNull Scoreboard teamsScoreBoard() {
         return teamsScoreboard;
+    }
+
+    public Set<Player> spectators() {
+        return spectators;
     }
 }

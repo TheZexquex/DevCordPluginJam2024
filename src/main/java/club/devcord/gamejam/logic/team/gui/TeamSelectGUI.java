@@ -1,6 +1,7 @@
 package club.devcord.gamejam.logic.team.gui;
 
 import club.devcord.gamejam.logic.Game;
+import club.devcord.gamejam.logic.team.TeamColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -28,22 +29,22 @@ public class TeamSelectGUI {
                         .setDisplayName(new AdventureComponentWrapper(
                                 Component.text("Team Rot")
                                         .color(NamedTextColor.RED)))
-                        , NamedTextColor.RED, game))
+                        , TeamColor.RED, game))
                 .addIngredient('G', new TeamSelectItem(new ItemBuilder(Material.GREEN_BED)
                         .setDisplayName(new AdventureComponentWrapper(
                                 Component.text("Team Grün")
                                         .color(NamedTextColor.GREEN)))
-                        , NamedTextColor.GREEN, game))
+                        , TeamColor.GREEN, game))
                 .addIngredient('B', new TeamSelectItem(new ItemBuilder(Material.BLUE_BED)
                         .setDisplayName(new AdventureComponentWrapper(
                                 Component.text("Team Blau")
                                         .color(NamedTextColor.BLUE)))
-                        , NamedTextColor.BLUE, game))
+                        , TeamColor.BLUE, game))
                 .addIngredient('Y', new TeamSelectItem(new ItemBuilder(Material.YELLOW_BED)
                         .setDisplayName(new AdventureComponentWrapper(
                                 Component.text("Team Gelb")
                                         .color(NamedTextColor.YELLOW)))
-                        , NamedTextColor.YELLOW, game));
+                        , TeamColor.YELLOW, game));
 
 
         var gui = Gui.normal().setStructure(structure);

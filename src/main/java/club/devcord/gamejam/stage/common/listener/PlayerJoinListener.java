@@ -29,6 +29,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
+        event.joinMessage(Component.empty());
 
         if (firstJoin) {
             firstJoin = false;
@@ -49,7 +50,7 @@ public class PlayerJoinListener implements Listener {
         if (plugin.game().gameStage() == GameStage.LOBBY) {
             lobbySetup(event);
         } else {
-            plugin.game().switchPlayerToTeam(player, NamedTextColor.GRAY);
+            plugin.game().spectators().add(player);
             player.setGameMode(GameMode.SPECTATOR);
             player.sendRichMessage(Messenger.PREFIX + "<grey>Das Spiel hat bereits begonnen, du bist Beobachter!");
         }
@@ -61,7 +62,6 @@ public class PlayerJoinListener implements Listener {
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
         player.setHealth(20);
-        event.joinMessage(Component.empty());
         plugin.messenger().broadCast(Messenger.PREFIX + "<dark_aqua>" + player.getName() + " <gray>hat das Spiel betreten");
 
         if (plugin.getServer().getOnlinePlayers().size() == GameSettings.MIN_PLAYERS) {
