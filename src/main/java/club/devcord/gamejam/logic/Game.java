@@ -162,7 +162,11 @@ public class Game {
         Bukkit.getOnlinePlayers().stream()
                 .filter(player -> !isPlayerInAnyTeam(player))
                 .forEach(player -> {
-                    switchPlayerToTeam(player, findSmallestTeam());
+                    var team = findSmallestTeam();
+                    var teamColor = team.teamColor();
+
+                    switchPlayerToTeam(player, team);
+                    player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team <" + teamColor.textColor() + ">"  + teamColor.displayName());
                 });
     }
 
