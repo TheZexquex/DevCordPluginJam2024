@@ -84,38 +84,13 @@ public class Game {
         this.actionBarInfoStopWatch = new Stopwatch();
 
         actionBarInfoStopWatch.start(1, TimeUnit.SECONDS, duration -> {}, duration -> {
-            plugin.getServer().getOnlinePlayers().forEach(player -> {
-                switch (Integer.parseInt(String.valueOf(duration.getSeconds())) % 4) {
-                    case 0 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 1 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten. (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 2 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten.. (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 3 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten... (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                }
-            });
+            var dots = ".".repeat((int) (duration.getSeconds() % 4));
+            var message = MiniMessage.miniMessage().deserialize(
+                    "<gray>Warten" + dots + " (<yellow><online><gray>/<yellow><required><gray>)",
+                    Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                    Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)));
+
+            plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(message));
         }, () -> {});
     }
 
@@ -176,7 +151,7 @@ public class Game {
 
         return shuffledTeams.stream()
                 .min(Comparator.comparingInt(team -> team.teamPlayers().size()))
-                .orElse(null); // Never null
+                .orElse(null); // Never null, but it looks prettier
     }
 
     public void tearDown() {
@@ -193,7 +168,7 @@ public class Game {
         shopNPC.removeAll();
 
         Bukkit.shutdown();
-        // plugin.serverApi().requestRestart();
+        // TODO: Replace the line above with "plugin.serverApi().requestRestart();"
     }
 
     public GameStage gameStage() {
@@ -237,11 +212,16 @@ public class Game {
     }
 
     public Optional<Team> getTeam(Player player) {
-        return teams.stream().filter(team -> team.teamPlayers().contains(player)).findFirst();
+        return teams.stream()
+                .filter(team -> team.teamPlayers().contains(player))
+                .findFirst();
     }
 
     public Team getTeamFromColor(TeamColor teamColor) {
-        return teams.stream().filter(team -> team.teamColor() == teamColor).findAny().orElse(null); // Never null
+        return teams.stream()
+                .filter(team -> team.teamColor() == teamColor)
+                .findAny()
+                .orElse(null); // Never null, but it looks prettier
     }
 
     public ShopNPC shopNPC() {
