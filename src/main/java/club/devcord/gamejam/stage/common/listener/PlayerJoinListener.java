@@ -64,7 +64,9 @@ public class PlayerJoinListener implements Listener {
         player.setHealth(20);
         plugin.messenger().broadCast(Messenger.PREFIX + "<dark_aqua>" + player.getName() + " <gray>hat das Spiel betreten");
 
-        if (plugin.getServer().getOnlinePlayers().size() == GameSettings.MIN_PLAYERS) {
+        var onlinePlayerCount = Bukkit.getServer().getOnlinePlayers().size();
+        var lobbyCountdown = plugin.game().lobbyCountdown();
+        if (onlinePlayerCount == GameSettings.MIN_PLAYERS && (lobbyCountdown == null || !lobbyCountdown.isRunning())) {
             plugin.game().startGameCountDown();
         }
 

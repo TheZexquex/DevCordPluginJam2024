@@ -9,6 +9,7 @@ import club.devcord.gamejam.stage.ingame.listener.NaturalHealthRegenerationListe
 import club.devcord.gamejam.stage.ingame.listener.ProjectileHitListener;
 import club.devcord.gamejam.stage.lobby.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
+import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,6 +40,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
         pluginManager.registerEvents(new BlockPlaceListener(), this);
         pluginManager.registerEvents(new ProjectileHitListener(), this);
+        pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
     }
 
     @Override

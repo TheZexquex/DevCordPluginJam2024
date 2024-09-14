@@ -40,6 +40,6 @@ public class GameSettings {
 
     public static final Set<RelativeLocation> DIAMOND_SPAWN_LOCATIONS = Set.of(
             RelativeLocation.of(8.5, 72.5, 12.5),
-            RelativeLocation.of(-7.5, 72.5, -11.5)
+            RelativeLocation.of(-6.5, 72.5, -10.5)
     );
 }
