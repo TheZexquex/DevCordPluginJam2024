@@ -46,7 +46,6 @@ public class TeamSelectGUI {
                                         .color(NamedTextColor.YELLOW)))
                         , TeamColor.YELLOW, game));
 
-
         var gui = Gui.normal().setStructure(structure);
 
         Window.single()
