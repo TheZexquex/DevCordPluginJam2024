@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.util.Set;
 
 public class GameSettings {
-    public static int MIN_PLAYERS = 1;
+    public static int MIN_PLAYERS = 2;
     public static int MAX_PLAYERS_PER_TEAM = 3;
 
     public static RelativeLocation SPAWN_LOCATION = new RelativeLocation(0, 118, 0);
