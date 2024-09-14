@@ -3,6 +3,7 @@ package club.devcord.gamejam.logic.shop;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.shop.gui.ShopGUI;
+import club.devcord.gamejam.utils.RelativeLocation;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
@@ -19,7 +20,7 @@ public class ShopNPC {
 
     public void create(Game game) {
         int i = GameSettings.SHOP_LOCATIONS.size();
-        for (GameSettings.RelativeLocation position : GameSettings.SHOP_LOCATIONS) {
+        for (RelativeLocation position : GameSettings.SHOP_LOCATIONS) {
             var location = new Location(game.gameMap().bukkitWorld(), position.x(), position.y(), position.z());
             var data = new NpcData("shop-" + i, UUID.randomUUID(), location);
             var skin = new SkinFetcher("https://cdn.thezexquex.dev/s/q7AstaB2nCeHacd/download/merchant-skin.png");
