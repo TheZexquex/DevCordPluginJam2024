@@ -23,14 +23,10 @@ public class CursedBedwarsPlugin extends JavaPlugin {
     public void onEnable() {
         //this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
+        this.game = new Game(this);
+        game.startLobbyPhase();
 
         registerListeners();
-
-        Bukkit.getScheduler().runTask(this, () -> {
-            this.game = new Game(this);
-            game.startLobbyPhase();
-            new ItemSpawnScheduler(this);
-        });
     }
 
     private void registerListeners() {
