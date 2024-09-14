@@ -6,6 +6,7 @@ import club.devcord.gamejam.logic.settings.GameSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.time.Duration;
 
@@ -28,7 +29,7 @@ public class ItemSpawnScheduler {
         var world = map.bukkitWorld();
         GameSettings.IRON_SPAWN_LOCATIONS.forEach(relativeLocation -> {
             var location = relativeLocation.toBukkitLocation(world);
-            world.dropItem(location, new ItemStack(Material.RAW_IRON));
+            world.dropItem(location, new ItemStack(Material.RAW_IRON)).setVelocity(new Vector(0,-1,0));;
         });
     }
 
@@ -36,7 +37,7 @@ public class ItemSpawnScheduler {
         var world = map.bukkitWorld();
         GameSettings.GOLD_SPAWN_LOCATIONS.forEach(relativeLocation -> {
             var location = relativeLocation.toBukkitLocation(world);
-            world.dropItem(location, new ItemStack(Material.RAW_GOLD));
+            world.dropItem(location, new ItemStack(Material.RAW_GOLD)).setVelocity(new Vector(0,-1,0));;
         });
     }
 
@@ -44,7 +45,7 @@ public class ItemSpawnScheduler {
         var world = map.bukkitWorld();
         GameSettings.DIAMOND_SPAWN_LOCATIONS.forEach(relativeLocation -> {
             var location = relativeLocation.toBukkitLocation(world);
-            world.dropItem(location, new ItemStack(Material.DIAMOND));
+            world.dropItem(location, new ItemStack(Material.DIAMOND)).setVelocity(new Vector(0,-1,0));;
         });
     }
 }

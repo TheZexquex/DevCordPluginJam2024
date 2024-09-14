@@ -6,6 +6,7 @@ import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.stage.common.listener.EntityDamageListener;
 import club.devcord.gamejam.stage.common.listener.FoodLevelChangeListener;
 import club.devcord.gamejam.stage.common.listener.PlayerJoinListener;
+import club.devcord.gamejam.stage.lobby.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
 import club.devcord.gamejam.stage.common.listener.PlayerQuitListener;
@@ -33,6 +34,7 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new PlayerInteractListener(game), this);
         pluginManager.registerEvents(new EntityDamageListener(game), this);
         pluginManager.registerEvents(new FoodLevelChangeListener(), this);
+        pluginManager.registerEvents(new BlockBreakListener(this), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
     }
 

@@ -28,9 +28,7 @@ public class ShopNPC {
             data.setDisplayName("<gray>⚖ <dark_gray>| <#eba834>Shop");
             data.setTurnToPlayer(true);
             data.setOnClick(player -> {
-                player.sendMessage("test");
                 game.getTeamColor(player).ifPresent(color -> {
-                    player.sendMessage("test2");
                     new ShopGUI().open(player, color);
                 });
             });

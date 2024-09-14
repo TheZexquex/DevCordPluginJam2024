@@ -6,11 +6,15 @@ import club.devcord.gamejam.logic.shop.ShopNPC;
 import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.timer.Countdown;
+import club.devcord.gamejam.timer.Stopwatch;
 import club.devcord.gamejam.utils.RelativeLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -38,6 +42,7 @@ public class Game {
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
+    private Stopwatch actionBarInfoStopWatch;
 
     public Game(CursedBedwarsPlugin plugin) {
         this.gameStage = GameStage.LOBBY;
@@ -63,6 +68,7 @@ public class Game {
                     .append(Component.text(String.valueOf(teamColor.toString().charAt(0)).toUpperCase())).color(teamColor)
                     .append(Component.text("] ").color(NamedTextColor.GRAY)));
             team.color(teamColor);
+            team.setAllowFriendlyFire(false);
         }
 
         this.gameMap = new GameMap();
@@ -70,9 +76,47 @@ public class Game {
         gameMap.bukkitWorld().setDifficulty(Difficulty.PEACEFUL);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+
+        this.actionBarInfoStopWatch = new Stopwatch();
+
+        actionBarInfoStopWatch.start(1, TimeUnit.SECONDS, duration -> {}, duration -> {
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                switch (Integer.parseInt(String.valueOf(duration.getSeconds())) % 4) {
+                    case 0 -> {
+                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
+                                "<gray>Warten (<yellow><online><gray>/<yellow><required><gray>)",
+                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
+                        );
+                    }
+                    case 1 -> {
+                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
+                                "<gray>Warten. (<yellow><online><gray>/<yellow><required><gray>)",
+                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
+                        );
+                    }
+                    case 2 -> {
+                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
+                                "<gray>Warten.. (<yellow><online><gray>/<yellow><required><gray>)",
+                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
+                        );
+                    }
+                    case 3 -> {
+                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
+                                "<gray>Warten... (<yellow><online><gray>/<yellow><required><gray>)",
+                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
+                        );
+                    }
+                }
+            });
+        }, () -> {});
     }
 
     public void startGameCountDown() {
+        actionBarInfoStopWatch.abort();
         var countdown = new Countdown();
 
         countdown.start(30, TimeUnit.SECONDS, (second) -> {
@@ -167,7 +211,6 @@ public class Game {
 
         var newTeam = teams.get(color);
         newTeam.teamPlayers().add(player);
-        newTeam.teamPlayers().forEach(player1 -> player.sendMessage(player1.name()));
 
         player.setGlowing(true);
     }

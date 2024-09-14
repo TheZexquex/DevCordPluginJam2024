@@ -1,6 +1,7 @@
 package club.devcord.gamejam.timer;
 
 import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +37,7 @@ public class Stopwatch {
             runAtPause.accept(elapsedDuration);
         } else {
             runPerStep.accept(elapsedDuration);
+            elapsedDuration = elapsedDuration.plus(Duration.of(stepAmount, timeUnit.toChronoUnit()));
         }
         executorService.schedule(() -> {
             step(stepAmount, timeUnit, runAtPause, runPerStep, runOnShutdown);

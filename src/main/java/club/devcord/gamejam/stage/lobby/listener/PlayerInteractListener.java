@@ -28,13 +28,12 @@ public class PlayerInteractListener implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
         if (item.getPersistentDataContainer().has(TeamSelectGUI.OPEN_ITEM_KEY)) {
+            event.setCancelled(true);
             new TeamSelectGUI().open(player, game);
         }
     }
