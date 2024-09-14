@@ -20,7 +20,7 @@ public class GameMap {
             FileUtils.copyDirectory(originalWorld, newWorldPath);
             FileUtils.delete(new File(newWorldPath, "uid.dat"));
         } catch (IOException exception) {
-
+            // Do nothing
         }
 
         this.bukkitWorld = Bukkit.createWorld(WorldCreator.name("game"));
