@@ -3,13 +3,14 @@ package club.devcord.gamejam;
 
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.message.Messenger;
-import club.devcord.gamejam.stage.common.listener.EntityDamageListener;
-import club.devcord.gamejam.stage.common.listener.FoodLevelChangeListener;
-import club.devcord.gamejam.stage.common.listener.PlayerJoinListener;
+import club.devcord.gamejam.stage.common.listener.*;
+import club.devcord.gamejam.stage.ingame.listener.BlockPlaceListener;
+import club.devcord.gamejam.stage.ingame.listener.NaturalHealthRegenerationListener;
+import club.devcord.gamejam.stage.ingame.listener.ProjectileHitListener;
 import club.devcord.gamejam.stage.lobby.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
+import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
-import club.devcord.gamejam.stage.common.listener.PlayerQuitListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CursedBedwarsPlugin extends JavaPlugin {
@@ -36,6 +37,10 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new FoodLevelChangeListener(), this);
         pluginManager.registerEvents(new BlockBreakListener(this), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
+        pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
+        pluginManager.registerEvents(new BlockPlaceListener(), this);
+        pluginManager.registerEvents(new ProjectileHitListener(), this);
+        pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
     }
 
     @Override

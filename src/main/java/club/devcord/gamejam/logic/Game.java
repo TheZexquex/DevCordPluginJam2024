@@ -41,6 +41,7 @@ public class Game {
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
+    private Countdown lobbyCountdown;
     private Stopwatch actionBarInfoStopWatch;
 
     public Game(CursedBedwarsPlugin plugin) {
@@ -79,50 +80,30 @@ public class Game {
         gameMap.bukkitWorld().setDifficulty(Difficulty.PEACEFUL);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        gameMap.bukkitWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
+        sendPreCountdownActionbar();
+    }
+
+    public void sendPreCountdownActionbar() {
         this.actionBarInfoStopWatch = new Stopwatch();
 
         actionBarInfoStopWatch.start(1, TimeUnit.SECONDS, duration -> {}, duration -> {
-            plugin.getServer().getOnlinePlayers().forEach(player -> {
-                switch (Integer.parseInt(String.valueOf(duration.getSeconds())) % 4) {
-                    case 0 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 1 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten. (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 2 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten.. (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                    case 3 -> {
-                        player.sendActionBar(MiniMessage.miniMessage().deserialize(
-                                "<gray>Warten... (<yellow><online><gray>/<yellow><required><gray>)",
-                                Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
-                                Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)))
-                        );
-                    }
-                }
-            });
+            var dots = ".".repeat((int) (duration.getSeconds() % 4));
+            var message = MiniMessage.miniMessage().deserialize(
+                    "<gray>Warten auf Spieler" + dots + " (<yellow><online><gray>/<yellow><required><gray>)",
+                    Placeholder.parsed("online", String.valueOf(plugin.getServer().getOnlinePlayers().size())),
+                    Placeholder.parsed("required", String.valueOf(GameSettings.MIN_PLAYERS)));
+
+            plugin.getServer().getOnlinePlayers().forEach(player -> player.sendActionBar(message));
         }, () -> {});
     }
 
     public void startGameCountDown() {
         actionBarInfoStopWatch.abort();
-        var countdown = new Countdown();
+        lobbyCountdown = new Countdown();
 
-        countdown.start(GameSettings.LOBBY_COUNTDOWN_SECONDS, TimeUnit.SECONDS, (second) -> {
+        lobbyCountdown.start(GameSettings.LOBBY_COUNTDOWN_SECONDS, TimeUnit.SECONDS, (second) -> {
             if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
                 plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
@@ -161,7 +142,11 @@ public class Game {
         Bukkit.getOnlinePlayers().stream()
                 .filter(player -> !isPlayerInAnyTeam(player))
                 .forEach(player -> {
-                    switchPlayerToTeam(player, findSmallestTeam());
+                    var team = findSmallestTeam();
+                    var teamColor = team.teamColor();
+
+                    switchPlayerToTeam(player, team);
+                    player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team <" + teamColor.textColor() + ">"  + teamColor.displayName());
                 });
     }
 
@@ -171,7 +156,7 @@ public class Game {
 
         return shuffledTeams.stream()
                 .min(Comparator.comparingInt(team -> team.teamPlayers().size()))
-                .orElse(null); // Never null
+                .orElse(null); // Never null, but it looks prettier
     }
 
     public void tearDown() {
@@ -188,7 +173,7 @@ public class Game {
         shopNPC.removeAll();
 
         Bukkit.shutdown();
-        // plugin.serverApi().requestRestart();
+        // TODO: Replace the line above with "plugin.serverApi().requestRestart();"
     }
 
     public GameStage gameStage() {
@@ -232,11 +217,16 @@ public class Game {
     }
 
     public Optional<Team> getTeam(Player player) {
-        return teams.stream().filter(team -> team.teamPlayers().contains(player)).findFirst();
+        return teams.stream()
+                .filter(team -> team.teamPlayers().contains(player))
+                .findFirst();
     }
 
     public Team getTeamFromColor(TeamColor teamColor) {
-        return teams.stream().filter(team -> team.teamColor() == teamColor).findAny().orElse(null); // Never null
+        return teams.stream()
+                .filter(team -> team.teamColor() == teamColor)
+                .findAny()
+                .orElse(null); // Never null, but it looks prettier
     }
 
     public ShopNPC shopNPC() {
@@ -245,6 +235,10 @@ public class Game {
 
     public @NotNull Scoreboard teamsScoreBoard() {
         return teamsScoreboard;
+    }
+
+    public Countdown lobbyCountdown() {
+        return lobbyCountdown;
     }
 
     public Set<Player> spectators() {
