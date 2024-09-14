@@ -1,6 +1,7 @@
 package club.devcord.gamejam.stage.common.listener;
 
 import club.devcord.gamejam.CursedBedwarsPlugin;
+import club.devcord.gamejam.logic.spawner.ItemSpawnScheduler;
 import club.devcord.gamejam.logic.team.gui.TeamSelectGUI;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.logic.settings.GameSettings;
@@ -19,6 +20,7 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class PlayerJoinListener implements Listener {
     private final CursedBedwarsPlugin plugin;
+    private boolean firstJoin = true;
 
     public PlayerJoinListener(CursedBedwarsPlugin plugin) {
         this.plugin = plugin;
@@ -27,6 +29,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
+
+        if (firstJoin) {
+            firstJoin = false;
+            new ItemSpawnScheduler(plugin);
+        }
 
         player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(Bukkit.getWorld("game")));
         player.getInventory().clear();
