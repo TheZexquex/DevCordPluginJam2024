@@ -6,13 +6,16 @@ import club.devcord.gamejam.logic.shop.ShopNPC;
 import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.message.Messenger;
 import club.devcord.gamejam.timer.Countdown;
+import club.devcord.gamejam.utils.RelativeLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Difficulty;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -21,6 +24,8 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -34,21 +39,19 @@ public class Game {
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
 
-    private final Team spectatorTeam = new Team();
-
     public Game(CursedBedwarsPlugin plugin) {
         this.gameStage = GameStage.LOBBY;
         this.plugin = plugin;
     }
 
     public void startLobbyPhase() {
-        teams.put(NamedTextColor.RED, new Team());
-        teams.put(NamedTextColor.GREEN, new Team());
-        teams.put(NamedTextColor.BLUE, new Team());
-        teams.put(NamedTextColor.YELLOW, new Team());
+        teams.put(NamedTextColor.RED, new Team(RelativeLocation.of(79, 66, 0, 90, 0)));
+        teams.put(NamedTextColor.GREEN, new Team(RelativeLocation.of(-78, 66, 0, -90, 0)));
+        teams.put(NamedTextColor.BLUE, new Team(RelativeLocation.of(0, 66, 79, 180, 0)));
+        teams.put(NamedTextColor.YELLOW, new Team(RelativeLocation.of(0, 66, -78, 0, 0)));
 
         // Spectator Team
-        teams.put(NamedTextColor.GRAY, new Team());
+        teams.put(NamedTextColor.GRAY, new Team(GameSettings.SPAWN_LOCATION));
 
         this.scoreboardManager = plugin.getServer().getScoreboardManager();
         this.teamsScoreboard = scoreboardManager.getNewScoreboard();
@@ -70,7 +73,6 @@ public class Game {
     }
 
     public void startGameCountDown() {
-
         var countdown = new Countdown();
 
         countdown.start(30, TimeUnit.SECONDS, (second) -> {
@@ -94,11 +96,42 @@ public class Game {
     public void startGame() {
         this.gameStage = GameStage.IN_GAME;
 
+        distributeRemainingPlayers();
+
         gameMap.bukkitWorld().getEntities().stream()
                 .filter(entity -> entity.getType() == EntityType.ITEM)
                 .forEach(Entity::remove);
 
+        teams.values().forEach(team -> {
+            team.teamPlayers().forEach(player -> {
+                player.teleport(team.spawnLocation().toBukkitLocation(Bukkit.getWorld("game")));
+            });
+        });
+    }
 
+    private void distributeRemainingPlayers() {
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> !isPlayerInAnyTeam(player))
+                .forEach(player -> {
+                    switchPlayerToTeam(player, findSmallestTeam());
+                });
+    }
+
+    private NamedTextColor findSmallestTeam() {
+        var shuffledTeams = new ArrayList<>(teams.entrySet());
+        Collections.shuffle(shuffledTeams);
+
+        int smallestSize = Integer.MAX_VALUE;
+        NamedTextColor smallestTeam = null;
+        for (var team : shuffledTeams) {
+            var teamSize = team.getValue().teamPlayers().size();
+            if (smallestSize > teamSize) {
+                smallestSize = teamSize;
+                smallestTeam = team.getKey();
+            }
+        }
+
+        return smallestTeam;
     }
 
     public void tearDown() {
@@ -127,12 +160,7 @@ public class Game {
     }
 
     public void switchPlayerToTeam(Player player, NamedTextColor color) {
-        var teamOpt = getTeam(player);
-        teamOpt.ifPresent(team -> team.teamPlayers().remove(player));
-        var sbTeam = teamsScoreboard.getPlayerTeam(player);
-        if (sbTeam != null) {
-            sbTeam.removePlayer(player);
-        }
+        clearTeam(player);
 
         var newSbTeam = teamsScoreboard.getTeam(color.toString());
         newSbTeam.addPlayer(player);
@@ -142,6 +170,15 @@ public class Game {
         newTeam.teamPlayers().forEach(player1 -> player.sendMessage(player1.name()));
 
         player.setGlowing(true);
+    }
+
+    public void clearTeam(Player player) {
+        var teamOpt = getTeam(player);
+        teamOpt.ifPresent(team -> team.teamPlayers().remove(player));
+        var sbTeam = teamsScoreboard.getPlayerTeam(player);
+        if (sbTeam != null) {
+            sbTeam.removePlayer(player);
+        }
     }
 
     public void setupNPCs() {
