@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class InventoryUtil {
-
     public static boolean hasEnoughItems(Player player, ItemStack itemStack, int amount) {
         var possibleItems = Arrays.stream(player.getInventory().getStorageContents())
                 .filter(Objects::nonNull)
