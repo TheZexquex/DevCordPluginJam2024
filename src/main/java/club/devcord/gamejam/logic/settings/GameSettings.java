@@ -15,7 +15,7 @@ public class GameSettings {
            RelativeLocation.of(-5, 66, -78),
            RelativeLocation.of(6, 66, 79),
            RelativeLocation.of(79, 66, -5),
-           RelativeLocation.of(-78, 55, 6)
+           RelativeLocation.of(-78, 66, 6)
     );
   
     public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(500);
