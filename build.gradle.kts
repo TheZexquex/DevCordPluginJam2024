@@ -14,6 +14,7 @@ plugins {
 }
 
 repositories {
+    maven("https://repo.codemc.io/repository/maven-releases/")
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://eldonexus.de/repository/maven-releases/")
@@ -28,9 +29,12 @@ val shadeBasePath = "${group}.libs."
 
 dependencies {
     implementation("xyz.xenondevs.invui:invui:1.33")
+    implementation("io.github.juliarn", "npc-lib-bukkit", "3.0.0-beta9")
+    implementation("commons-io:commons-io:2.16.1")
     bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
     bukkitLibrary("commons-io:commons-io:2.16.1")
 
+    compileOnly("com.github.retrooper:packetevents-spigot:2.4.0")
     //paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("de.chojo.pluginjam:plugin-paper:1.0.3")
@@ -51,6 +55,7 @@ tasks {
         archiveClassifier = ""
 
         relocate("xyz.xenondevs.invui", shadeBasePath + "xyz.xenondevs.invui")
+        relocate("io.github.juliarn", shadeBasePath + "io.github.juliarn")
     }
 
     runServer {
