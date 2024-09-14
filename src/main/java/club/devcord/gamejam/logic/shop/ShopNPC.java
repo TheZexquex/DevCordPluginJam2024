@@ -28,7 +28,7 @@ public class ShopNPC {
             data.setTurnToPlayer(true);
             data.setOnClick(player -> {
                 game.getTeam(player).ifPresent(team -> {
-                    new ShopGUI().open(player, team.teamColor().textColor());
+                    new ShopGUI().open(player, team.teamColor());
                 });
             });
 
