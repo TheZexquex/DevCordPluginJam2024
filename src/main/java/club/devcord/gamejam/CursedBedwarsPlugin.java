@@ -34,7 +34,6 @@ public class CursedBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new FoodLevelChangeListener(), this);
         pluginManager.registerEvents(new BlockBreakListener(this), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
-        pluginManager.registerEvents(new AdvancementListener(), this);
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
     }
 

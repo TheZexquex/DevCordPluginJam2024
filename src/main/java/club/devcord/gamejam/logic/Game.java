@@ -79,6 +79,7 @@ public class Game {
         gameMap.bukkitWorld().setDifficulty(Difficulty.PEACEFUL);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         gameMap.bukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        gameMap.bukkitWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         this.actionBarInfoStopWatch = new Stopwatch();
 
