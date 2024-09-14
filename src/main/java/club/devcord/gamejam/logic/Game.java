@@ -103,7 +103,7 @@ public class Game {
         actionBarInfoStopWatch.abort();
         lobbyCountdown = new Countdown();
 
-        lobbyCountdown.start(30, TimeUnit.SECONDS, (second) -> {
+        lobbyCountdown.start(GameSettings.LOBBY_COUNTDOWN_SECONDS, TimeUnit.SECONDS, (second) -> {
             if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
                 plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
                 plugin.getServer().getOnlinePlayers().forEach(player -> {

@@ -10,6 +10,7 @@ public class Team {
     private final TeamColor teamColor;
     private final RelativeLocation spawnLocation;
     private final Set<Player> teamPlayers;
+    private boolean alive = true;
 
     public Team(TeamColor teamColor, RelativeLocation spawnLocation) {
         this.teamColor = teamColor;
@@ -27,5 +28,13 @@ public class Team {
 
     public RelativeLocation spawnLocation() {
         return spawnLocation;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }
