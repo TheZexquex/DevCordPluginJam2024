@@ -34,7 +34,7 @@ public class LobbyQuitListener implements Listener {
         game.lobbyCountdown().abort();
         game.sendPreCountdownActionbar();
 
-        messenger.broadCast(Messenger.PREFIX + "<red>Der Countdown wurde abgebrochen, weil zu wenige Spieler auf dem Server sind!");
+        messenger.broadcast(Messenger.PREFIX + "<red>Der Countdown wurde abgebrochen, weil zu wenige Spieler auf dem Server sind!");
         Bukkit.getServer().getOnlinePlayers().forEach(player -> {
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 1.0F, 1.0F));
         });

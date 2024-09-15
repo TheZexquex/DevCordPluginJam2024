@@ -1,11 +1,12 @@
 package club.devcord.gamejam.stage.common.listener;
 
-import club.devcord.gamejam.CursedBedwarsPlugin;
+import club.devcord.gamejam.BuggyBedwarsPlugin;
 import club.devcord.gamejam.logic.GameStage;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.spawner.ItemSpawnScheduler;
 import club.devcord.gamejam.logic.team.gui.TeamSelectGUI;
 import club.devcord.gamejam.message.Messenger;
+import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -19,10 +20,10 @@ import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class PlayerJoinListener implements Listener {
-    private final CursedBedwarsPlugin plugin;
+    private final BuggyBedwarsPlugin plugin;
     private boolean firstJoin = true;
 
-    public PlayerJoinListener(CursedBedwarsPlugin plugin) {
+    public PlayerJoinListener(BuggyBedwarsPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -33,9 +34,10 @@ public class PlayerJoinListener implements Listener {
 
         if (firstJoin) {
             firstJoin = false;
-            plugin.game().setupNPCs();
             new ItemSpawnScheduler(plugin);
         }
+
+        plugin.game().setupNPCs();
 
         player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(Bukkit.getWorld("game")));
         player.getInventory().clear();
@@ -44,12 +46,15 @@ public class PlayerJoinListener implements Listener {
         player.setScoreboard(plugin.game().teamsScoreBoard());
 
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            plugin.game().shopNPC().spawnForPlayer(player);
+            FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
+                npc.spawn(player);
+            });
         });
 
         if (plugin.game().gameStage() == GameStage.LOBBY) {
             lobbySetup(event);
         } else {
+            plugin.game().sideBarScoreboard().show(player);
             plugin.game().spectators().add(player);
             player.setGameMode(GameMode.SPECTATOR);
             player.sendRichMessage(Messenger.PREFIX + "<grey>Das Spiel hat bereits begonnen, du bist Beobachter!");
@@ -62,12 +67,12 @@ public class PlayerJoinListener implements Listener {
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
         player.setHealth(20);
-        plugin.messenger().broadCast(Messenger.PREFIX + "<dark_aqua>" + player.getName() + " <gray>hat das Spiel betreten");
+        plugin.messenger().broadcast(Messenger.PREFIX + "<dark_aqua>" + player.getName() + " <gray>hat das Spiel betreten");
 
         var onlinePlayerCount = Bukkit.getServer().getOnlinePlayers().size();
         var lobbyCountdown = plugin.game().lobbyCountdown();
         if (onlinePlayerCount == GameSettings.MIN_PLAYERS && (lobbyCountdown == null || !lobbyCountdown.isRunning())) {
-            plugin.game().startGameCountDown();
+            plugin.game().startGameCountDown(GameSettings.LOBBY_COUNTDOWN_SECONDS);
         }
 
         var teamSelectItem = new ItemBuilder(Material.RED_BED)

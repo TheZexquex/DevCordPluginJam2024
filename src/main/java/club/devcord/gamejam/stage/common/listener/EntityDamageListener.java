@@ -2,21 +2,27 @@ package club.devcord.gamejam.stage.common.listener;
 
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.logic.GameStage;
-import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.message.Messenger;
-import org.bukkit.GameMode;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Optional;
+
+// TODO: Add kill sounds
 public class EntityDamageListener implements Listener {
     private final Game game;
+    private final Messenger messenger;
 
-    public EntityDamageListener(Game game) {
+    public EntityDamageListener(Game game, Messenger messenger) {
         this.game = game;
+        this.messenger = messenger;
     }
 
     @EventHandler
@@ -33,26 +39,25 @@ public class EntityDamageListener implements Listener {
                 if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     return;
                 }
-                game.getTeam(player).ifPresent(team -> {
-                    for (Player onlinePlayer : player.getServer().getOnlinePlayers()) {
-                        onlinePlayer.sendRichMessage(Messenger.PREFIX + "<" + team.teamColor().textColor().toString().toLowerCase() + ">" + player.getName() + " <red>ist gestorben");
-                    }
 
-                    handleKill(player, team);
+                game.getTeam(player).ifPresent(team -> {
+                    var killerOptional = game.damagerRegistry().getDamager(player);
+                    if (killerOptional.isPresent()) {
+                        var killer = killerOptional.get();
+                        game.getTeam(killer).ifPresent(damagerTeam -> {
+                            for (var onlinePlayer : player.getServer().getOnlinePlayers()) {
+                                onlinePlayer.sendRichMessage(messenger.getDeathMessage(player, team, killer, damagerTeam));
+                            }
+                        });
+                    } else {
+                        for (var onlinePlayer : player.getServer().getOnlinePlayers()) {
+                            onlinePlayer.sendRichMessage(messenger.getDeathMessage(player, team));
+                        }
+
+                        game.handleKill(player);
+                    }
                 });
             }
-        }
-    }
-
-    private void handleKill(Player player, Team team) {
-        if (team.isAlive()) {
-            player.teleport(team.spawnLocation().toBukkitLocation(game.gameMap().bukkitWorld()));
-            player.setHealth(20);
-        } else {
-            team.teamPlayers().remove(player);
-            game.spectators().add(player);
-            player.setGameMode(GameMode.SPECTATOR);
-            player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(game.gameMap().bukkitWorld()));
         }
     }
 
@@ -65,28 +70,30 @@ public class EntityDamageListener implements Listener {
                 return;
             }
 
+            if (event.getDamager() instanceof Player damager) {
+                game.damagerRegistry().add(player, damager);
+            }
+
             if (event.getDamage() >= player.getHealth()) {
                 event.setCancelled(true);
                 if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     return;
                 }
-                
+
                 game.getTeam(player).ifPresent(team -> {
                     if (!(event.getDamager() instanceof Player damager)) {
-                        for (Player onlinePlayer : player.getServer().getOnlinePlayers()) {
-                            onlinePlayer.sendRichMessage(Messenger.PREFIX + "<" + team.teamColor().textColor().toString().toLowerCase() + ">" + player.getName() + " <red>ist gestorben");
+                        for (var onlinePlayer : player.getServer().getOnlinePlayers()) {
+                            onlinePlayer.sendRichMessage(messenger.getDeathMessage(player, team));
                         }
                     } else {
-                        game.getTeam(damager).ifPresent(damaagerTeam -> {
-                            for (Player onlinePlayer : player.getServer().getOnlinePlayers()) {
-                                onlinePlayer.sendRichMessage(Messenger.PREFIX +
-                                        "<" + damaagerTeam.teamColor().textColor().toString().toLowerCase() + ">" + damager.getName() + " <red>hat " +
-                                        "<" + team.teamColor().textColor().toString().toLowerCase() + ">" + player.getName() + " <red>getötet!" );
+                        game.getTeam(damager).ifPresent(damagerTeam -> {
+                            for (var onlinePlayer : player.getServer().getOnlinePlayers()) {
+                                onlinePlayer.sendRichMessage(messenger.getDeathMessage(player, team, damager, damagerTeam));
                             }
                         });
                     }
                     
-                    handleKill(player, team);
+                    game.handleKill(player);
                 });
             }
         }

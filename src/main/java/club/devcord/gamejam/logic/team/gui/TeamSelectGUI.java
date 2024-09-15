@@ -16,7 +16,7 @@ import xyz.xenondevs.invui.item.impl.SimpleItem;
 import xyz.xenondevs.invui.window.Window;
 
 public class TeamSelectGUI {
-    public static final NamespacedKey OPEN_ITEM_KEY = new NamespacedKey("cursed_bedwars", "team_select_open_item");
+    public static final NamespacedKey OPEN_ITEM_KEY = new NamespacedKey("buggy_bedwars", "team_select_open_item");
 
     public void open(Player player, Game game) {
         var structure = new Structure(

@@ -19,6 +19,7 @@ repositories {
     maven("https://eldonexus.de/repository/maven-releases/")
     maven("https://repo.xenondevs.xyz/releases")
     maven("https://repo.fancyplugins.de/releases")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 group = "club.devcord.gamejam"
@@ -32,6 +33,11 @@ dependencies {
     implementation("commons-io:commons-io:2.16.1")
     bukkitLibrary("org.incendo:cloud-paper:2.0.0-beta.10")
     bukkitLibrary("commons-io:commons-io:2.16.1")
+
+    val scoreboardLibraryVersion = "2.1.12"
+    bukkitLibrary("net.megavex:scoreboard-library-api:$scoreboardLibraryVersion")
+    bukkitLibrary("net.megavex:scoreboard-library-implementation:$scoreboardLibraryVersion")
+    bukkitLibrary("net.megavex:scoreboard-library-modern:$scoreboardLibraryVersion")
 
     compileOnly("de.oliver:FancyNpcs:2.2.2")
     //paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
@@ -92,9 +98,9 @@ tasks {
 }
 
 bukkit {
-    name = "CursedBedwars"
+    name = "BuggyBedwars"
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD
-    main = "club.devcord.gamejam.CursedBedwarsPlugin"
+    main = "club.devcord.gamejam.BuggyBedwarsPlugin"
     apiVersion = "1.20"
 
     depend = listOf("FancyNpcs")

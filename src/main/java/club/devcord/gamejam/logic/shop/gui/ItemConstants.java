@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 
 public class ItemConstants {
-    public static final NamespacedKey GAME_ITEM_TYPE = new NamespacedKey("cursed_bedwars", "game_item_type");
+    public static final NamespacedKey GAME_ITEM_TYPE = new NamespacedKey("buggy_bedwars", "game_item_type");
 
     public enum Type {
         KNOCK_BACK_STICK, WOOL

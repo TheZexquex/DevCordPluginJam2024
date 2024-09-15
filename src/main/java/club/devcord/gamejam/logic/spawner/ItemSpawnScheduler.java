@@ -1,6 +1,6 @@
 package club.devcord.gamejam.logic.spawner;
 
-import club.devcord.gamejam.CursedBedwarsPlugin;
+import club.devcord.gamejam.BuggyBedwarsPlugin;
 import club.devcord.gamejam.logic.GameMap;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import org.bukkit.Bukkit;
@@ -13,7 +13,7 @@ import java.time.Duration;
 public class ItemSpawnScheduler {
     private final GameMap map;
 
-    public ItemSpawnScheduler(CursedBedwarsPlugin plugin) {
+    public ItemSpawnScheduler(BuggyBedwarsPlugin plugin) {
         this.map = plugin.game().gameMap();
 
         Bukkit.getScheduler().runTaskTimer(plugin, this::spawnIron, 0L, durationToTicks(GameSettings.IRON_SPAWN_DELAY));

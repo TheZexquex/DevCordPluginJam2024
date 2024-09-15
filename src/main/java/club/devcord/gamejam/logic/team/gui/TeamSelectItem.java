@@ -25,8 +25,10 @@ public class TeamSelectItem extends SimpleItem {
     @Override
     public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
         super.handleClick(clickType, player, event);
-        game.switchPlayerToTeam(player, game.getTeamFromColor(teamColor));
-        player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team <" + teamColor.textColor() + ">"  + teamColor.displayName());
+
+        var team = game.getTeamFromColor(teamColor);
+        game.switchPlayerToTeam(player, team);
+        player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team " + team.getFormattedName());
         player.closeInventory();
         player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
     }

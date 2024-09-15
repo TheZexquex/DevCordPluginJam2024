@@ -23,6 +23,7 @@ public class PlayerQuitListener implements Listener {
         var teamOptional = game.getTeam(player);
 
         game.clearTeam(player);
+        game.sideBarScoreboard().hide(player);
 
         var teamColor = NamedTextColor.DARK_AQUA;
         if (teamOptional.isPresent()) {
@@ -30,6 +31,6 @@ public class PlayerQuitListener implements Listener {
         }
 
         event.quitMessage(Component.empty());
-        messenger.broadCast(Messenger.PREFIX + "<" + teamColor.asHexString() + ">" + player.getName() + " <gray>hat das Spiel verlassen");
+        messenger.broadcast(Messenger.PREFIX + "<" + teamColor.asHexString() + ">" + player.getName() + " <gray>hat das Spiel verlassen");
     }
 }

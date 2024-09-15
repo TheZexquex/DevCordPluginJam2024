@@ -1,6 +1,7 @@
 package club.devcord.gamejam.logic;
 
-import club.devcord.gamejam.CursedBedwarsPlugin;
+import club.devcord.gamejam.BuggyBedwarsPlugin;
+import club.devcord.gamejam.logic.scoreboard.SideBarScoreboard;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.shop.ShopNPC;
 import club.devcord.gamejam.logic.team.Team;
@@ -11,15 +12,10 @@ import club.devcord.gamejam.timer.Stopwatch;
 import club.devcord.gamejam.utils.RelativeLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
-import org.bukkit.GameRule;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -32,19 +28,22 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
-    private final CursedBedwarsPlugin plugin;
+    private final BuggyBedwarsPlugin plugin;
     private GameStage gameStage;
     private GameMap gameMap;
     private final Set<Team> teams = new HashSet<>();
     private final Set<Player> spectators = new HashSet<>();
+    private final BlockRegistry blockRegistry = new BlockRegistry();
+    private final DamagerRegistry damagerRegistry = new DamagerRegistry();
+    private SideBarScoreboard sideBarScoreboard;
 
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
-    private Countdown lobbyCountdown;
+    private Countdown lobbyCountdown = new Countdown();
     private Stopwatch actionBarInfoStopWatch;
 
-    public Game(CursedBedwarsPlugin plugin) {
+    public Game(BuggyBedwarsPlugin plugin) {
         this.gameStage = GameStage.LOBBY;
         this.plugin = plugin;
     }
@@ -61,26 +60,22 @@ public class Game {
         for (var team : teams) {
             var teamColor = team.teamColor();
             var scoreboardTeam = teamsScoreboard.registerNewTeam(teamColor.toString());
-            scoreboardTeam.prefix(Component.text("").color(NamedTextColor.GRAY)
-                    .append(Component.text("[").color(NamedTextColor.GRAY))
-                    .append(Component.text(String.valueOf(teamColor.toString().charAt(0)).toUpperCase())).color(teamColor.textColor())
-                    .append(Component.text("] ").color(NamedTextColor.GRAY)));
+            scoreboardTeam.prefix(MiniMessage.miniMessage().deserialize(team.getShortPrefix()));
             scoreboardTeam.color(teamColor.textColor());
             scoreboardTeam.setAllowFriendlyFire(false);
         }
 
         this.gameMap = new GameMap();
+        this.sideBarScoreboard = new SideBarScoreboard(plugin);
 
-        GameSettings.SHOP_LOCATIONS.forEach(relativeLocation -> {
-            var location = relativeLocation.toBukkitLocation(gameMap.bukkitWorld());
-
-            location.getChunk().setForceLoaded(true);
-        });
-
-        gameMap.bukkitWorld().setDifficulty(Difficulty.PEACEFUL);
-        gameMap.bukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        gameMap.bukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        gameMap.bukkitWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        var world = gameMap.bukkitWorld();
+        world.setTime(0);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.DO_ENTITY_DROPS, false);
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         sendPreCountdownActionbar();
     }
@@ -99,13 +94,12 @@ public class Game {
         }, () -> {});
     }
 
-    public void startGameCountDown() {
+    public void startGameCountDown(int seconds) {
         actionBarInfoStopWatch.abort();
-        lobbyCountdown = new Countdown();
 
-        lobbyCountdown.start(GameSettings.LOBBY_COUNTDOWN_SECONDS, TimeUnit.SECONDS, (second) -> {
+        lobbyCountdown.start(seconds, TimeUnit.SECONDS, (second) -> {
             if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
-                plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
+                plugin.messenger().broadcast(Messenger.PREFIX + "<green>Das Spiel startet in <yellow>" + second + " <green>Sekunden");
                 plugin.getServer().getOnlinePlayers().forEach(player -> {
                     player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
                 });
@@ -117,7 +111,7 @@ public class Game {
                 player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1.0F, 1.0F));
             });
 
-            plugin.messenger().broadCast(Messenger.PREFIX + "<green>Das Spiel startet");
+            plugin.messenger().broadcast(Messenger.PREFIX + "<green>Das Spiel startet");
         });
     }
 
@@ -125,6 +119,10 @@ public class Game {
         this.gameStage = GameStage.IN_GAME;
 
         distributeRemainingPlayers();
+
+        teams.stream()
+                .filter(team -> team.teamPlayers().isEmpty())
+                .forEach(team -> team.setEmpty(true));
 
         gameMap.bukkitWorld().getEntities().stream()
                 .filter(entity -> entity.getType() == EntityType.ITEM)
@@ -134,8 +132,13 @@ public class Game {
             team.teamPlayers().forEach(player -> {
                 player.teleport(team.spawnLocation().toBukkitLocation(Bukkit.getWorld("game")));
                 player.setGlowing(false);
+                sideBarScoreboard.show(player);
             });
         });
+    }
+
+    public void initShutdown() {
+
     }
 
     private void distributeRemainingPlayers() {
@@ -146,7 +149,7 @@ public class Game {
                     var teamColor = team.teamColor();
 
                     switchPlayerToTeam(player, team);
-                    player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team <" + teamColor.textColor() + ">"  + teamColor.displayName());
+                    player.sendRichMessage(Messenger.PREFIX + "<gray>Du bist jetzt in Team " + team.getFormattedName());
                 });
     }
 
@@ -169,8 +172,6 @@ public class Game {
         } catch (IOException ignored) {
             // Not much we can do
         }
-
-        shopNPC.removeAll();
 
         Bukkit.shutdown();
         // TODO: Replace the line above with "plugin.serverApi().requestRestart();"
@@ -208,7 +209,6 @@ public class Game {
 
     public void setupNPCs() {
         this.shopNPC = new ShopNPC();
-        shopNPC.removeAll();
         shopNPC.create(this);
     }
 
@@ -241,7 +241,60 @@ public class Game {
         return lobbyCountdown;
     }
 
+    public Set<Team> teams() {
+        return teams;
+    }
+
     public Set<Player> spectators() {
         return spectators;
+    }
+
+    public BlockRegistry blockRegistry() {
+        return blockRegistry;
+    }
+
+    public DamagerRegistry damagerRegistry() {
+        return damagerRegistry;
+    }
+
+    public SideBarScoreboard sideBarScoreboard() {
+        return sideBarScoreboard;
+    }
+
+    public void handleKill(Player player) {
+        damagerRegistry.remove(player);
+
+        getTeam(player).ifPresent(team -> {
+            if (team.alive()) {
+                player.teleport(team.spawnLocation().toBukkitLocation(gameMap.bukkitWorld()));
+                player.setHealth(20);
+            } else {
+                clearTeam(player);
+                spectators().add(player);
+                player.setGameMode(GameMode.SPECTATOR);
+                player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(gameMap.bukkitWorld()));
+                player.sendRichMessage(Messenger.PREFIX + "<red><i>Du wurdest eliminiert!");
+
+                if (team.teamPlayers().isEmpty()) {
+                    plugin.messenger().broadcast(Messenger.PREFIX + "<i><dark_red>Das Team " + team.getFormattedName() + " <dark_red><i>wurde eliminiert!");
+                    plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> {
+                        onlinePlayer.playSound(Sound.sound(Key.key("entity.lightning_bolt.thunder"), Sound.Source.MASTER, 1.0F, 1.0F));
+                    });
+                }
+
+                handlePotentialWin();
+            }
+        });
+    }
+
+    public void handlePotentialWin() {
+        var teamsAlive = teams.stream().filter(Team::alive).toList();
+
+        if (teamsAlive.size() == 1) {
+            var winningTeam = teamsAlive.getFirst();
+
+
+            initShutdown();
+        }
     }
 }

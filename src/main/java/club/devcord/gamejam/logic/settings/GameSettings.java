@@ -6,11 +6,14 @@ import java.time.Duration;
 import java.util.Set;
 
 public class GameSettings {
-    public static final int MIN_PLAYERS = 2;
+    public static final int MIN_PLAYERS = 3;
     public static final int MAX_PLAYERS_PER_TEAM = 3;
-    public static final int LOBBY_COUNTDOWN_SECONDS = 10;
+    public static final int LOBBY_COUNTDOWN_SECONDS = 30;
+    public static final int LOBBY_COUNTDOWN_FORCE_START_SECONDS = 3;
 
     public static final double HEALTH_REGENERATION_RATE = 0.2;
+
+    public static final Duration KILL_CREDIT_DURATION = Duration.ofSeconds(30);
 
     public static final RelativeLocation SPAWN_LOCATION = RelativeLocation.of(0, 118, 0);
 
@@ -43,4 +46,6 @@ public class GameSettings {
             RelativeLocation.of(8.5, 72.5, 12.5),
             RelativeLocation.of(-6.5, 72.5, -10.5)
     );
+
+    public static final int MIN_Y_LEVEL = 30;
 }
