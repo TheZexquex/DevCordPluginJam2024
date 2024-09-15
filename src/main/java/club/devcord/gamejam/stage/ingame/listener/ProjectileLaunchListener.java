@@ -33,7 +33,10 @@ public class ProjectileLaunchListener implements Listener {
 
                     var block = egg.getLocation().getBlock();
                     if (block.getType() == Material.AIR) {
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> block.setType(woolMaterial), 10L);
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            block.setType(woolMaterial);
+                            game.blockRegistry().add(block.getLocation());
+                        }, 7L);
                     }
                 }, null, 5L, 1L);
             });

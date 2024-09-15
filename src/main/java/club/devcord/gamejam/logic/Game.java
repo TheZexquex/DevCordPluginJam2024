@@ -52,10 +52,10 @@ public class Game {
     }
 
     public void startLobbyPhase() {
-        teams.add(new Team(TeamColor.RED, RelativeLocation.of(79.5, 66, 0.5, 90, 0), RelativeLocation.of(67.5, 67.6, 0.5, 0, 0)));
-        teams.add(new Team(TeamColor.GREEN, RelativeLocation.of(-78.5, 66, 0.5, -90, 0), RelativeLocation.of(-66.5, 67.6, 0.5, 0, 0)));
-        teams.add(new Team(TeamColor.BLUE, RelativeLocation.of(0.5, 66, 79.5, 180, 0), RelativeLocation.of(0.5, 67.6, 67.5, 0, 0)));
-        teams.add(new Team(TeamColor.YELLOW, RelativeLocation.of(0.5, 66, -78.5, 0, 0), RelativeLocation.of(0.5, 67.6, -66.5, 0, 0)));
+        teams.add(new Team(TeamColor.RED, RelativeLocation.of(79.5, 66, 0.5, 90, 0), RelativeLocation.of(66.4, 67.6, 0.5)));
+        teams.add(new Team(TeamColor.GREEN, RelativeLocation.of(-78.5, 66, 0.5, -90, 0), RelativeLocation.of(-65.5, 67.6, 0.5)));
+        teams.add(new Team(TeamColor.BLUE, RelativeLocation.of(0.5, 66, 79.5, 180, 0), RelativeLocation.of(0.5, 67.6, 66.5)));
+        teams.add(new Team(TeamColor.YELLOW, RelativeLocation.of(0.5, 66, -78.5, 0, 0), RelativeLocation.of(0.5, 67.6, -65.5)));
 
         this.scoreboardManager = plugin.getServer().getScoreboardManager();
         this.teamsScoreboard = scoreboardManager.getNewScoreboard();
