@@ -1,15 +1,14 @@
 package club.devcord.gamejam;
 
 
+import club.devcord.gamejam.command.DebugCommand;
+import club.devcord.gamejam.command.ForceStartCommand;
 import club.devcord.gamejam.command.ShopCommand;
 import club.devcord.gamejam.command.ShoutCommand;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.message.Messenger;
-import club.devcord.gamejam.command.DebugCommand;
-import club.devcord.gamejam.command.ForceStartCommand;
 import club.devcord.gamejam.stage.common.listener.*;
 import club.devcord.gamejam.stage.ingame.listener.*;
-import club.devcord.gamejam.stage.common.listener.BlockBreakListener;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;

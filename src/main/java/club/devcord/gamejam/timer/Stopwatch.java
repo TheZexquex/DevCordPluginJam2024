@@ -1,7 +1,6 @@
 package club.devcord.gamejam.timer;
 
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

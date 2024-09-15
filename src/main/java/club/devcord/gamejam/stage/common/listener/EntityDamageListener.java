@@ -3,22 +3,16 @@ package club.devcord.gamejam.stage.common.listener;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.logic.GameStage;
 import club.devcord.gamejam.logic.shop.gui.ItemConstants;
-import club.devcord.gamejam.logic.team.Team;
 import club.devcord.gamejam.message.Messenger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.Optional;
 
 // TODO: Add kill sounds
 public class EntityDamageListener implements Listener {

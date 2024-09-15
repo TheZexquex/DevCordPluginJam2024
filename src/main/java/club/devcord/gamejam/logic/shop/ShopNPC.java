@@ -2,7 +2,6 @@ package club.devcord.gamejam.logic.shop;
 
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.logic.settings.GameSettings;
-import club.devcord.gamejam.logic.shop.gui.ShopGUI;
 import club.devcord.gamejam.utils.RelativeLocation;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.NpcData;

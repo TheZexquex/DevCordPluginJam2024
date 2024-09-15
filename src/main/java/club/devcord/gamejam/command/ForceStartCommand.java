@@ -1,9 +1,9 @@
 package club.devcord.gamejam.command;
 
 import club.devcord.gamejam.BuggyBedwarsPlugin;
+import club.devcord.gamejam.command.core.BaseCommand;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.message.Messenger;
-import club.devcord.gamejam.command.core.BaseCommand;
 import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.incendo.cloud.CommandManager;

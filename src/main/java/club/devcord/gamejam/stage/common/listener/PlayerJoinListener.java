@@ -6,7 +6,6 @@ import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.logic.spawner.ItemSpawnScheduler;
 import club.devcord.gamejam.logic.team.gui.TeamSelectGUI;
 import club.devcord.gamejam.message.Messenger;
-import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
