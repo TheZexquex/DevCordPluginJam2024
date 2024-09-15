@@ -15,6 +15,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.title.Title;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -142,8 +143,38 @@ public class Game {
         });
     }
 
-    public void initShutdown() {
+    public void initShutdown(Team winningTeam) {
+        if (winningTeam != null) {
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                player.showTitle(Title.title(
+                        MiniMessage.miniMessage().deserialize("<green>Das Spiel ist vorbei"),
+                        MiniMessage.miniMessage().deserialize("<gray>Team " + winningTeam.getFormattedName() + " <gray>hat gewonnen")));
+            });
+        } else {
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                player.showTitle(Title.title(
+                        MiniMessage.miniMessage().deserialize("<green>Das Spiel ist vorbei"), Component.empty()
+                ));
+            });
+        }
 
+        var shutDownCountdown = new Countdown();
+        shutDownCountdown.start(GameSettings.SHUTDOWN_COUNTDOWN_SECONDS, TimeUnit.SECONDS, (second) -> {
+            if (second == 30 || second == 20 || second == 15 || (second <= 10 && second != 0)) {
+                plugin.messenger().broadcast(Messenger.PREFIX + "<red>Der Server schließt in" + second + " <red>Sekunden");
+                plugin.getServer().getOnlinePlayers().forEach(player -> {
+                    player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1.0F, 1.0F));
+                });
+            }
+        }, () -> {
+            Bukkit.getScheduler().runTask(plugin, this::startGame);
+
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                player.playSound(Sound.sound(Key.key("block.note_block.bass"), Sound.Source.MASTER, 1.0F, 1.0F));
+            });
+
+            plugin.messenger().broadcast(Messenger.PREFIX + "<red>Der Server schließt JETZT!");
+        });
     }
 
     private void distributeRemainingPlayers() {
@@ -306,7 +337,11 @@ public class Game {
         if (teamsAlive.size() == 1) {
             var winningTeam = teamsAlive.getFirst();
 
-            initShutdown();
+            initShutdown(winningTeam);
+        }
+
+        if (teamsAlive.isEmpty()) {
+            initShutdown(null);
         }
     }
 }

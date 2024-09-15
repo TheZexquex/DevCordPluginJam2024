@@ -48,4 +48,5 @@ public class GameSettings {
     );
 
     public static final int MIN_Y_LEVEL = 30;
+    public static final int SHUTDOWN_COUNTDOWN_SECONDS = 10;
 }
