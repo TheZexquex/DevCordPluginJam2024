@@ -12,8 +12,6 @@ import club.devcord.gamejam.stage.ingame.listener.*;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
-import de.chojo.pluginjam.PluginJam;
-import de.chojo.pluginjam.serverapi.ServerApi;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.SenderMapper;
@@ -27,11 +25,9 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
     private Game game;
     private Messenger messenger;
     private LegacyPaperCommandManager<CommandSender> commandManager;
-    private ServerApi serverApi;
 
     @Override
     public void onEnable() {
-        this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
         this.game = new Game(this);
         game.startLobbyPhase();
@@ -96,9 +92,5 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
 
     public Game game() {
         return game;
-    }
-
-    public ServerApi serverApi() {
-        return serverApi;
     }
 }

@@ -231,7 +231,7 @@ public class Game {
             // Not much we can do
         }
 
-        plugin.serverApi().requestRestart();
+        plugin.getServer().shutdown();
     }
 
     public GameStage gameStage() {
