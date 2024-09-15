@@ -8,7 +8,6 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,8 +38,6 @@ public class BlockBreakListener implements Listener {
             game.getTeam(player).ifPresent(team -> {
                 if (team.bedLocation().equalsBukkitLoc(loc1) || team.bedLocation().equalsBukkitLoc(loc2)) {
                     team.setAlive(false);
-                    event.setDropItems(false);
-                    //TODO: DROP NEW BED
                 } else {
                     event.setCancelled(true);
                     player.sendRichMessage(Messenger.PREFIX + "<red>Du kannst dein eigenes Bett nicht abbauen!");

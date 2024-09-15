@@ -49,7 +49,7 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new BlockBreakListener(game.blockRegistry(), game, messenger), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
-        pluginManager.registerEvents(new BlockPlaceListener(), this);
+        pluginManager.registerEvents(new BlockPlaceListener(game), this);
         pluginManager.registerEvents(new ProjectileHitListener(), this);
         pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
         pluginManager.registerEvents(new ExplodeListener(game.blockRegistry()), this);
