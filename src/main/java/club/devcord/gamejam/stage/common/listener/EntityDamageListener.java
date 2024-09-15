@@ -7,6 +7,7 @@ import club.devcord.gamejam.message.Messenger;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Material;
+import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -91,6 +92,10 @@ public class EntityDamageListener implements Listener {
                     return;
                 }
 
+                if (event.getDamager() instanceof IronGolem ironGolem) {
+                    ironGolem.damage(20);
+                }
+
                 game.getTeam(player).ifPresent(team -> {
                     if (!(event.getDamager() instanceof Player damager)) {
                         for (var onlinePlayer : player.getServer().getOnlinePlayers()) {
@@ -104,7 +109,6 @@ public class EntityDamageListener implements Listener {
                             }
                         });
                     }
-
                     game.handleKill(player);
                 });
             }

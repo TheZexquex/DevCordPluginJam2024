@@ -37,7 +37,7 @@ public class BlockBreakListener implements Listener {
 
             game.getTeam(player).ifPresent(team -> {
                 if (team.bedLocation().equalsBukkitLoc(loc1) || team.bedLocation().equalsBukkitLoc(loc2)) {
-                    team.setAlive(false);
+                    team.setAlive(false, false);
                 } else {
                     event.setCancelled(true);
                     player.sendRichMessage(Messenger.PREFIX + "<red>Du kannst dein eigenes Bett nicht abbauen!");
@@ -53,7 +53,7 @@ public class BlockBreakListener implements Listener {
     }
 
     private Location getTwinLocation(Bed bed, Block bedBlock) {
-        if(bed.getPart() == Bed.Part.HEAD){
+        if(bed.getPart() == Bed.Part.FOOT){
             return (bedBlock.getRelative(bed.getFacing())).getLocation();
         }else{
             return (bedBlock.getRelative(bed.getFacing().getOppositeFace())).getLocation();

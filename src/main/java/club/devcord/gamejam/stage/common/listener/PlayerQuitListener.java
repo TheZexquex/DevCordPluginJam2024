@@ -1,6 +1,7 @@
 package club.devcord.gamejam.stage.common.listener;
 
 import club.devcord.gamejam.logic.Game;
+import club.devcord.gamejam.logic.GameStage;
 import club.devcord.gamejam.message.Messenger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -25,12 +26,14 @@ public class PlayerQuitListener implements Listener {
         game.clearTeam(player);
         game.sideBarScoreboard().hide(player);
 
+        if (game.gameStage() == GameStage.IN_GAME) {
+            game.handlePotentialWin();
+        }
+
         var teamColor = NamedTextColor.DARK_AQUA;
         if (teamOptional.isPresent()) {
             teamColor = teamOptional.get().teamColor().textColor();
         }
-
-        game.handlePotentialWin();
 
         event.quitMessage(Component.empty());
         messenger.broadcast(Messenger.PREFIX + "<" + teamColor.asHexString() + ">" + player.getName() + " <gray>hat das Spiel verlassen");

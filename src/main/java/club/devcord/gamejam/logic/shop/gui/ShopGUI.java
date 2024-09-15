@@ -57,12 +57,12 @@ public class ShopGUI {
                         KeyValue.of(new ItemStack(Material.RAW_IRON), 5)
                 ),
                 new ShopStandardItem(
-                        new ItemBuilder(Material.WEATHERED_CUT_COPPER_STAIRS),
-                        KeyValue.of(new ItemStack(Material.RAW_IRON), 64)
+                        new ItemBuilder(Material.WEATHERED_CUT_COPPER_STAIRS, 5),
+                        KeyValue.of(new ItemStack(Material.RAW_IRON), 32)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.SAND).setAmount(6),
-                        KeyValue.of(new ItemStack(Material.RAW_IRON), 64)
+                        KeyValue.of(new ItemStack(Material.RAW_IRON), 32)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.CHERRY_PLANKS).setAmount(2),
@@ -193,11 +193,15 @@ public class ShopGUI {
         gui.addItems(
                 new ShopStandardItem(
                         new ItemBuilder(Material.ENDER_PEARL),
-                        KeyValue.of(new ItemStack(Material.DIAMOND), 10)
+                        KeyValue.of(new ItemStack(Material.DIAMOND), 6)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.TNT),
                         KeyValue.of(new ItemStack(Material.RAW_GOLD), 5)
+                ),
+                new ShopStandardItem(
+                        new ItemBuilder(Material.IRON_GOLEM_SPAWN_EGG).setDisplayName("Wächter"),
+                        KeyValue.of(new ItemStack(Material.DIAMOND), 3)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.EGG).setDisplayName("Brückenei"),
@@ -205,11 +209,15 @@ public class ShopGUI {
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.SNOWBALL).setDisplayName("Explosiver Schneeball"),
-                        KeyValue.of(new ItemStack(Material.RAW_IRON), 128)
+                        KeyValue.of(new ItemStack(Material.DIAMOND), 10)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.PUFFERFISH_BUCKET).setAmount(2),
                         KeyValue.of(new ItemStack(Material.RAW_GOLD), 4)
+                ),
+                new ShopStandardItem(
+                        new ItemBuilder(Material.GOLDEN_APPLE).setAmount(2),
+                        KeyValue.of(new ItemStack(Material.RAW_GOLD), 6)
                 )
         );
 

@@ -91,7 +91,7 @@ public class DebugCommand extends BaseCommand {
         var team = plugin.game().getTeamFromColor(playerCommandContext.get("team"));
         var state = (boolean) playerCommandContext.get("state");
 
-        team.setAlive(state);
+        team.setAlive(state, false);
         sender.sendRichMessage(
                 Messenger.PREFIX
                         + "<gray>Alive von <" +  team.teamColor().toString() + ">"

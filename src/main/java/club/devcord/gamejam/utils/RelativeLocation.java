@@ -13,13 +13,12 @@ public record RelativeLocation(double x, double y, double z, float yaw, float pi
     }
 
     public static RelativeLocation of(Location location) {
-        return new RelativeLocation(location.x(), location.y(), location.z(), location.getYaw(), location.getPitch());
+        return new RelativeLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getYaw(), location.getPitch());
     }
 
     public Location toBukkitLocation(World world) {
         return new Location(world, x, y, z, yaw, pitch);
     }
-
 
     @Override
     public boolean equals(Object obj) {

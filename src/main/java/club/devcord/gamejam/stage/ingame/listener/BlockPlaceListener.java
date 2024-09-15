@@ -30,7 +30,7 @@ public class BlockPlaceListener implements Listener {
                     .findAny();
 
             if (targetTeamOptional.isPresent()) {
-                targetTeamOptional.get().setAlive(true);
+                targetTeamOptional.get().setAlive(true, false);
             } else {
                 event.setCancelled(true);
 

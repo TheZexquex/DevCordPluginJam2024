@@ -52,9 +52,11 @@ public class Team {
         return bedLocation;
     }
 
-    public void setAlive(boolean alive) {
+    public void setAlive(boolean alive, boolean silent) {
         this.alive = alive;
-        Bukkit.getPluginManager().callEvent(alive ? new TeamBedRebuildEvent(this) : new TeamBedDestroyEvent(this));
+        if (!silent) {
+            Bukkit.getPluginManager().callEvent(alive ? new TeamBedRebuildEvent(this) : new TeamBedDestroyEvent(this));
+        }
     }
 
     public boolean alive() {

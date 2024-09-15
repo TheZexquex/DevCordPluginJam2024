@@ -12,6 +12,8 @@ import club.devcord.gamejam.stage.ingame.listener.*;
 import club.devcord.gamejam.stage.lobby.listener.InventoryInteractListener;
 import club.devcord.gamejam.stage.lobby.listener.LobbyQuitListener;
 import club.devcord.gamejam.stage.lobby.listener.PlayerInteractListener;
+import de.chojo.pluginjam.PluginJam;
+import de.chojo.pluginjam.serverapi.ServerApi;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.cloud.SenderMapper;
@@ -25,11 +27,11 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
     private Game game;
     private Messenger messenger;
     private LegacyPaperCommandManager<CommandSender> commandManager;
-    //private ServerApi serverApi;
+    private ServerApi serverApi;
 
     @Override
     public void onEnable() {
-        //this.serverApi = getPlugin(PluginJam.class).api();
+        this.serverApi = getPlugin(PluginJam.class).api();
         this.messenger = new Messenger(getServer());
         this.game = new Game(this);
         game.startLobbyPhase();
@@ -40,23 +42,24 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
 
     private void registerListeners() {
         var pluginManager = this.getServer().getPluginManager();
-        pluginManager.registerEvents(new PlayerJoinListener(this), this);
-        pluginManager.registerEvents(new InventoryInteractListener(game), this);
-        pluginManager.registerEvents(new PlayerInteractListener(game), this);
-        pluginManager.registerEvents(new EntityDamageListener(game, messenger), this);
-        pluginManager.registerEvents(new FoodLevelChangeListener(), this);
-        pluginManager.registerEvents(new BlockBreakListener(game.blockRegistry(), game, messenger), this);
-        pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
-        pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
-        pluginManager.registerEvents(new BlockPlaceListener(game), this);
-        pluginManager.registerEvents(new ProjectileHitListener(), this);
-        pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
-        pluginManager.registerEvents(new ExplodeListener(game.blockRegistry()), this);
-        pluginManager.registerEvents(new PlayerMoveListener(game, messenger), this);
-        pluginManager.registerEvents(new TeamBedStateChangeListener(this), this);
         pluginManager.registerEvents(new AsyncChatListener(game, messenger), this);
+        pluginManager.registerEvents(new BlockBreakListener(game.blockRegistry(), game, messenger), this);
+        pluginManager.registerEvents(new BlockPlaceListener(game), this);
+        pluginManager.registerEvents(new EntityDamageListener(game, messenger), this);
+        pluginManager.registerEvents(new EntitySpawnListener(this), this);
+        pluginManager.registerEvents(new ExplodeListener(game.blockRegistry()), this);
+        pluginManager.registerEvents(new FoodLevelChangeListener(), this);
+        pluginManager.registerEvents(new InventoryInteractListener(game), this);
+        pluginManager.registerEvents(new LobbyQuitListener(game, messenger), this);
+        pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
         pluginManager.registerEvents(new PlayerDropItemListener(), this);
+        pluginManager.registerEvents(new PlayerInteractListener(game), this);
+        pluginManager.registerEvents(new PlayerJoinListener(this), this);
+        pluginManager.registerEvents(new PlayerMoveListener(game, messenger), this);
+        pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
+        pluginManager.registerEvents(new ProjectileHitListener(), this);
         pluginManager.registerEvents(new ProjectileLaunchListener(this, game), this);
+        pluginManager.registerEvents(new TeamBedStateChangeListener(this), this);
         pluginManager.registerEvents(game.blockRegistry(), this);
     }
 
@@ -95,7 +98,7 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
         return game;
     }
 
-    //public ServerApi serverApi() {
-    //    return serverApi;
-    //}
+    public ServerApi serverApi() {
+        return serverApi;
+    }
 }

@@ -103,5 +103,5 @@ bukkit {
     main = "club.devcord.gamejam.BuggyBedwarsPlugin"
     apiVersion = "1.20"
 
-    depend = listOf("FancyNpcs")
+    depend = listOf("FancyNpcs", "PluginJam")
 }

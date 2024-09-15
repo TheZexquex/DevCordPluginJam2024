@@ -27,6 +27,7 @@ public class GameSettings {
     public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(1500);
     public static final Duration GOLD_SPAWN_DELAY = Duration.ofSeconds(15);
     public static final Duration DIAMOND_SPAWN_DELAY = Duration.ofSeconds(30);
+    public static final Duration PHANTOM_SPAWN_DURATION = Duration.ofMinutes(1);
 
     public static final Set<RelativeLocation> IRON_SPAWN_LOCATIONS = Set.of(
             RelativeLocation.of(-82.5, 66, 0.5),

@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
@@ -30,6 +32,12 @@ public class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
         event.joinMessage(Component.empty());
+
+        player.addPotionEffect(new PotionEffect(
+                PotionEffectType.NIGHT_VISION,
+                PotionEffect.INFINITE_DURATION,
+                1, false, false)
+        );
 
         if (firstJoin) {
             firstJoin = false;
@@ -54,6 +62,7 @@ public class PlayerJoinListener implements Listener {
 
         if (plugin.game().gameStage() == GameStage.LOBBY) {
             lobbySetup(event);
+            player.setAllowFlight(true);
         } else {
             plugin.game().sideBarScoreboard().show(player);
             plugin.game().spectators().add(player);
@@ -67,6 +76,7 @@ public class PlayerJoinListener implements Listener {
 
         player.setGameMode(GameMode.SURVIVAL);
         player.setFoodLevel(20);
+        player.setSaturation(20);
         player.setHealth(20);
         plugin.messenger().broadcast(Messenger.PREFIX + "<dark_aqua>" + player.getName() + " <gray>hat das Spiel betreten");
 
@@ -82,7 +92,6 @@ public class PlayerJoinListener implements Listener {
 
         var teamSelectItemMeta = teamSelectItem.getItemMeta();
         teamSelectItemMeta.getPersistentDataContainer().set(TeamSelectGUI.OPEN_ITEM_KEY, PersistentDataType.BOOLEAN, true);
-
         teamSelectItem.setItemMeta(teamSelectItemMeta);
 
         player.getInventory().setItem(8, teamSelectItem);
