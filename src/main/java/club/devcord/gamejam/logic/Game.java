@@ -12,6 +12,7 @@ import club.devcord.gamejam.timer.Stopwatch;
 import club.devcord.gamejam.utils.RelativeLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.apache.commons.io.FileUtils;
@@ -19,6 +20,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
@@ -35,13 +37,14 @@ public class Game {
     private final Set<Player> spectators = new HashSet<>();
     private final BlockRegistry blockRegistry = new BlockRegistry();
     private final DamagerRegistry damagerRegistry = new DamagerRegistry();
-    private SideBarScoreboard sideBarScoreboard;
 
+    private SideBarScoreboard sideBarScoreboard;
     private ScoreboardManager scoreboardManager;
     private Scoreboard teamsScoreboard;
     private ShopNPC shopNPC;
     private Countdown lobbyCountdown = new Countdown();
     private Stopwatch actionBarInfoStopWatch;
+    private Inventory enderchest;
 
     public Game(BuggyBedwarsPlugin plugin) {
         this.gameStage = GameStage.LOBBY;
@@ -49,10 +52,10 @@ public class Game {
     }
 
     public void startLobbyPhase() {
-        teams.add(new Team(TeamColor.RED, RelativeLocation.of(79.5, 66, 0.5, 90, 0)));
-        teams.add(new Team(TeamColor.GREEN, RelativeLocation.of(-78.5, 66, 0.5, -90, 0)));
-        teams.add(new Team(TeamColor.BLUE, RelativeLocation.of(0.5, 66, 79.5, 180, 0)));
-        teams.add(new Team(TeamColor.YELLOW, RelativeLocation.of(0.5, 66, -78.5, 0, 0)));
+        teams.add(new Team(TeamColor.RED, RelativeLocation.of(79.5, 66, 0.5, 90, 0), RelativeLocation.of(67.5, 67.6, 0.5, 0, 0)));
+        teams.add(new Team(TeamColor.GREEN, RelativeLocation.of(-78.5, 66, 0.5, -90, 0), RelativeLocation.of(-66.5, 67.6, 0.5, 0, 0)));
+        teams.add(new Team(TeamColor.BLUE, RelativeLocation.of(0.5, 66, 79.5, 180, 0), RelativeLocation.of(0.5, 67.6, 67.5, 0, 0)));
+        teams.add(new Team(TeamColor.YELLOW, RelativeLocation.of(0.5, 66, -78.5, 0, 0), RelativeLocation.of(0.5, 67.6, -66.5, 0, 0)));
 
         this.scoreboardManager = plugin.getServer().getScoreboardManager();
         this.teamsScoreboard = scoreboardManager.getNewScoreboard();
@@ -67,9 +70,11 @@ public class Game {
 
         this.gameMap = new GameMap();
         this.sideBarScoreboard = new SideBarScoreboard(plugin);
+        this.enderchest = Bukkit.createInventory(null, 3 * 9, Component.text("Ender Chest"));
 
         var world = gameMap.bukkitWorld();
         world.setTime(0);
+        world.setWeatherDuration(world.getClearWeatherDuration());
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_ENTITY_DROPS, false);
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
@@ -209,7 +214,9 @@ public class Game {
 
     public void setupNPCs() {
         this.shopNPC = new ShopNPC();
-        shopNPC.create(this);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            shopNPC.create(this);
+        }, 20);
     }
 
     public boolean isPlayerInAnyTeam(Player player) {
@@ -261,18 +268,24 @@ public class Game {
         return sideBarScoreboard;
     }
 
+    public Inventory enderchest() {
+        return enderchest;
+    }
+
     public void handleKill(Player player) {
         damagerRegistry.remove(player);
 
         getTeam(player).ifPresent(team -> {
             if (team.alive()) {
                 player.teleport(team.spawnLocation().toBukkitLocation(gameMap.bukkitWorld()));
+                player.playSound(Sound.sound(Key.key("entity.player.death"), Sound.Source.MASTER, 1.0F, 1.0F));
                 player.setHealth(20);
             } else {
                 clearTeam(player);
                 spectators().add(player);
                 player.setGameMode(GameMode.SPECTATOR);
                 player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(gameMap.bukkitWorld()));
+                player.playSound(Sound.sound(Key.key("entity.player.death"), Sound.Source.MASTER, 1.0F, 1.0F));
                 player.sendRichMessage(Messenger.PREFIX + "<red><i>Du wurdest eliminiert!");
 
                 if (team.teamPlayers().isEmpty()) {
@@ -292,7 +305,6 @@ public class Game {
 
         if (teamsAlive.size() == 1) {
             var winningTeam = teamsAlive.getFirst();
-
 
             initShutdown();
         }

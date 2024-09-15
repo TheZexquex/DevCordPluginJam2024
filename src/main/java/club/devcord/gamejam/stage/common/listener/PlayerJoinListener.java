@@ -34,10 +34,12 @@ public class PlayerJoinListener implements Listener {
 
         if (firstJoin) {
             firstJoin = false;
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                plugin.game().setupNPCs();
+            }, 2*20);
             new ItemSpawnScheduler(plugin);
         }
 
-        plugin.game().setupNPCs();
 
         player.teleport(GameSettings.SPAWN_LOCATION.toBukkitLocation(Bukkit.getWorld("game")));
         player.getInventory().clear();
@@ -45,11 +47,11 @@ public class PlayerJoinListener implements Listener {
 
         player.setScoreboard(plugin.game().teamsScoreBoard());
 
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
-                npc.spawn(player);
-            });
-        });
+//        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+//            FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
+//                npc.spawn(player);
+//            });
+//        });
 
         if (plugin.game().gameStage() == GameStage.LOBBY) {
             lobbySetup(event);

@@ -9,9 +9,11 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 public class ProjectileHitListener implements Listener {
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (event.getEntityType() == EntityType.SNOWBALL) {
-            var block = event.getHitBlock();
-            block.getWorld().createExplosion(block.getLocation().add(0.5, 0.5, 0.5), 3f, false, true, Bukkit.getPlayer(event.getEntity().getOwnerUniqueId()));
+        var projectile = event.getEntity().getLocation();
+        var entityType = event.getEntityType();
+
+        if (entityType == EntityType.SNOWBALL) {
+            projectile.getWorld().createExplosion(projectile, 3f, false, true, Bukkit.getPlayer(event.getEntity().getOwnerUniqueId()));
         }
     }
 }

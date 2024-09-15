@@ -12,14 +12,14 @@ public class ItemConstants {
     public static final NamespacedKey GAME_ITEM_TYPE = new NamespacedKey("buggy_bedwars", "game_item_type");
 
     public enum Type {
-        KNOCK_BACK_STICK, WOOL
+        KNOCK_BACK_STICK, WOOL, PLACEABLE_BED
     }
 
     public static ItemStack knockBackStick() {
         var itemStack = new ItemStack(Material.BREEZE_ROD);
         var itemMeta = itemStack.getItemMeta();
 
-        itemMeta.addEnchant(Enchantment.KNOCKBACK, 3, true);
+        itemMeta.addEnchant(Enchantment.KNOCKBACK, 2, true);
         itemMeta.getPersistentDataContainer().set(GAME_ITEM_TYPE, PersistentDataType.STRING, Type.KNOCK_BACK_STICK.name());
 
         itemStack.setItemMeta(itemMeta);
@@ -32,6 +32,17 @@ public class ItemConstants {
         var itemMeta = itemStack.getItemMeta();
 
         itemMeta.getPersistentDataContainer().set(GAME_ITEM_TYPE, PersistentDataType.STRING, Type.WOOL.name());
+
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    public static ItemStack bed(NamedTextColor color) {
+        var material = Material.valueOf(color.toString().toUpperCase() + "_BED");
+        var itemStack = new ItemStack(material);
+        var itemMeta = itemStack.getItemMeta();
+
+        itemMeta.getPersistentDataContainer().set(GAME_ITEM_TYPE, PersistentDataType.STRING, Type.PLACEABLE_BED.name());
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;

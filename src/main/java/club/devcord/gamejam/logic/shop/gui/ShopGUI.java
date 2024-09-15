@@ -49,12 +49,16 @@ public class ShopGUI {
     }
 
     private Gui getBlockGui(TeamColor teamColor) {
-        var gui = Gui.empty(9, 1);
+        var gui = Gui.empty(9, 2);
 
         gui.addItems(
                 new ShopStandardItem(
                         new ItemBuilder(ItemConstants.wool(teamColor.textColor())).setAmount(16),
                         KeyValue.of(new ItemStack(Material.RAW_IRON), 5)
+                ),
+                new ShopStandardItem(
+                        new ItemBuilder(Material.WEATHERED_CUT_COPPER_STAIRS),
+                        KeyValue.of(new ItemStack(Material.RAW_IRON), 64)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.SAND).setAmount(6),
@@ -74,9 +78,13 @@ public class ShopGUI {
     }
 
     private Gui getEquipmentGui(TeamColor teamColor) {
-        var gui = Gui.empty(9, 1);
+        var gui = Gui.empty(9, 2);
 
         gui.addItems(
+                new ShopStandardItem(
+                        new ItemBuilder(ItemConstants.knockBackStick()),
+                        KeyValue.of(new ItemStack(Material.RAW_IRON), 10)
+                ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.WOODEN_SWORD),
                         KeyValue.of(new ItemStack(Material.RAW_IRON), 20)
@@ -88,6 +96,14 @@ public class ShopGUI {
                 new ShopStandardItem(
                         new ItemBuilder(Material.IRON_SWORD),
                         KeyValue.of(new ItemStack(Material.DIAMOND), 4)
+                ),
+                new ShopStandardItem(
+                        new ItemBuilder(Material.CROSSBOW),
+                        KeyValue.of(new ItemStack(Material.DIAMOND), 5)
+                ),
+                new ShopStandardItem(
+                        new ItemBuilder(Material.SPECTRAL_ARROW).setAmount(2),
+                        KeyValue.of(new ItemStack(Material.RAW_GOLD), 1)
                 ),
                 new ShopArmorItem(
                         new ItemBuilder(Material.LEATHER_BOOTS),
@@ -135,7 +151,7 @@ public class ShopGUI {
     }
 
     private Gui getToolGui() {
-        var gui = Gui.empty(9, 1);
+        var gui = Gui.empty(9, 2);
 
         gui.addItems(
                 new ShopStandardItem(
@@ -172,7 +188,7 @@ public class ShopGUI {
     }
 
     private Gui getSpecialGui() {
-        var gui = Gui.empty(9, 1);
+        var gui = Gui.empty(9, 2);
 
         gui.addItems(
                 new ShopStandardItem(
@@ -184,16 +200,12 @@ public class ShopGUI {
                         KeyValue.of(new ItemStack(Material.RAW_GOLD), 5)
                 ),
                 new ShopStandardItem(
+                        new ItemBuilder(Material.EGG).setDisplayName("Brückenei"),
+                        KeyValue.of(new ItemStack(Material.RAW_GOLD), 10)
+                ),
+                new ShopStandardItem(
                         new ItemBuilder(Material.SNOWBALL).setDisplayName("Explosiver Schneeball"),
                         KeyValue.of(new ItemStack(Material.RAW_IRON), 128)
-                ),
-                new ShopStandardItem(
-                        new ItemBuilder(Material.CROSSBOW),
-                        KeyValue.of(new ItemStack(Material.DIAMOND), 5)
-                ),
-                new ShopStandardItem(
-                        new ItemBuilder(Material.SPECTRAL_ARROW).setAmount(2),
-                        KeyValue.of(new ItemStack(Material.RAW_GOLD), 1)
                 ),
                 new ShopStandardItem(
                         new ItemBuilder(Material.PUFFERFISH_BUCKET).setAmount(2),

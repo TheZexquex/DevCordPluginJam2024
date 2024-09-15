@@ -3,6 +3,8 @@ package club.devcord.gamejam.stage.ingame.listener;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.logic.settings.GameSettings;
 import club.devcord.gamejam.message.Messenger;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -32,6 +34,8 @@ public class PlayerMoveListener implements Listener {
             if (killerOptional.isPresent()) {
                 var killer = killerOptional.get();
                 var killerTeamOptional = game.getTeam(killer);
+
+                killer.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1.0F, 1.0F));
 
                 if (killerTeamOptional.isPresent()) {
                     messenger.broadcast(messenger.getDeathMessage(player, teamOptional.get(), killer, killerTeamOptional.get()));

@@ -1,5 +1,6 @@
 package club.devcord.gamejam.stage.ingame.listener;
 
+import com.destroystokyo.paper.MaterialSetTag;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,8 @@ public class BlockPlaceListener implements Listener {
         if (block.getType() == Material.TNT) {
             block.setType(Material.AIR);
             block.getWorld().spawnEntity(block.getLocation(), EntityType.TNT);
+        } else if (MaterialSetTag.BEDS.isTagged(block.getType())) {
+            // TODO: Check if the bed can be placed here
         }
     }
 }

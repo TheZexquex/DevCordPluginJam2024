@@ -2,7 +2,6 @@ package club.devcord.gamejam.logic.scoreboard;
 
 import club.devcord.gamejam.BuggyBedwarsPlugin;
 import club.devcord.gamejam.message.Messenger;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.megavex.scoreboardlibrary.api.ScoreboardLibrary;
 import net.megavex.scoreboardlibrary.api.exception.NoPacketAdapterAvailableException;
@@ -32,22 +31,24 @@ public class SideBarScoreboard {
                 .addComponent(SidebarComponent.staticLine(MiniMessage.miniMessage().deserialize("<gray>\uD83D\uDC6A | Tᴇᴀᴍs")));
 
         plugin.game().teams().forEach(team -> {
-            lines.addBlankLine();
-            lines.addDynamicLine(() -> {
-                var teamName = " " + team.getFormattedName();
-                String teamStatus;
-                if (team.empty() || (!team.alive() && team.teamPlayers().isEmpty())) {
-                    teamStatus = "  <red>❌";
-                } else if (team.alive()) {
-                    teamStatus = "  <green>✔";
-                } else {
-                    teamStatus = "  <yellow>⚔";
-                }
+            if (!team.empty()) {
+                lines.addBlankLine();
+                lines.addDynamicLine(() -> {
+                    var teamName = " " + team.getFormattedName();
+                    String teamStatus;
+                    if (team.empty() || (!team.alive() && team.teamPlayers().isEmpty())) {
+                        teamStatus = "  <red>❌";
+                    } else if (team.alive()) {
+                        teamStatus = "  <green>✔";
+                    } else {
+                        teamStatus = "  <yellow>⚔";
+                    }
 
-                var teamAlive  = " <gray>(<yellow>" + team.teamPlayers().size() + "<gray>)";
+                    var teamAlive  = " <gray>(<yellow>" + team.teamPlayers().size() + "<gray>)";
 
-                return MiniMessage.miniMessage().deserialize(teamStatus + teamName + teamAlive);
-            });
+                    return MiniMessage.miniMessage().deserialize(teamStatus + teamName + teamAlive);
+                });
+            }
         });
 
         var title = MiniMessage.miniMessage().deserialize("     " + Messenger.PREFIX + "   ");

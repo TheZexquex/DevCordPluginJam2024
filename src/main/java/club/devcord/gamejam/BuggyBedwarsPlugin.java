@@ -1,6 +1,7 @@
 package club.devcord.gamejam;
 
 
+import club.devcord.gamejam.command.ShopCommand;
 import club.devcord.gamejam.command.ShoutCommand;
 import club.devcord.gamejam.logic.Game;
 import club.devcord.gamejam.message.Messenger;
@@ -45,7 +46,7 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new PlayerInteractListener(game), this);
         pluginManager.registerEvents(new EntityDamageListener(game, messenger), this);
         pluginManager.registerEvents(new FoodLevelChangeListener(), this);
-        pluginManager.registerEvents(new BlockBreakListener(game.blockRegistry()), this);
+        pluginManager.registerEvents(new BlockBreakListener(game.blockRegistry(), game, messenger), this);
         pluginManager.registerEvents(new PlayerQuitListener(game, messenger), this);
         pluginManager.registerEvents(new NaturalHealthRegenerationListener(), this);
         pluginManager.registerEvents(new BlockPlaceListener(), this);
@@ -55,6 +56,8 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
         pluginManager.registerEvents(new PlayerMoveListener(game, messenger), this);
         pluginManager.registerEvents(new TeamBedStateChangeListener(this), this);
         pluginManager.registerEvents(new AsyncChatListener(game, messenger), this);
+        pluginManager.registerEvents(new PlayerDropItemListener(), this);
+        pluginManager.registerEvents(new ProjectileLaunchListener(this, game), this);
         pluginManager.registerEvents(game.blockRegistry(), this);
     }
 
@@ -77,6 +80,7 @@ public class BuggyBedwarsPlugin extends JavaPlugin {
         new ForceStartCommand(this).register(commandManager);
         new DebugCommand(this).register(commandManager);
         new ShoutCommand(this).register(commandManager);
+        new ShopCommand(this).register(commandManager);
     }
 
     @Override

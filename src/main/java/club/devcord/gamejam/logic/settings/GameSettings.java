@@ -13,7 +13,7 @@ public class GameSettings {
 
     public static final double HEALTH_REGENERATION_RATE = 0.2;
 
-    public static final Duration KILL_CREDIT_DURATION = Duration.ofSeconds(30);
+    public static final Duration KILL_CREDIT_DURATION = Duration.ofSeconds(15);
 
     public static final RelativeLocation SPAWN_LOCATION = RelativeLocation.of(0, 118, 0);
 
@@ -24,7 +24,7 @@ public class GameSettings {
            RelativeLocation.of(-78.5, 66, 6.5)
     );
   
-    public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(500);
+    public static final Duration IRON_SPAWN_DELAY = Duration.ofMillis(1500);
     public static final Duration GOLD_SPAWN_DELAY = Duration.ofSeconds(15);
     public static final Duration DIAMOND_SPAWN_DELAY = Duration.ofSeconds(30);
 

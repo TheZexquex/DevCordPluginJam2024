@@ -16,16 +16,16 @@ public class DamagerRegistry {
     }
 
     public void remove(Player player) {
-        damageHistory.remove(player);
+        damageHistory.remove(player.getUniqueId());
     }
 
     public Optional<Player> getDamager(Player player) {
-        if (!damageHistory.containsKey(player)) {
+        if (!damageHistory.containsKey(player.getUniqueId())) {
             return Optional.empty();
         }
 
-        var damageData = damageHistory.get(player);
-        if (damageData.timestamp + GameSettings.KILL_CREDIT_DURATION.toMillis() > System.currentTimeMillis()) {
+        var damageData = damageHistory.get(player.getUniqueId());
+        if (damageData.timestamp + GameSettings.KILL_CREDIT_DURATION.toMillis() < System.currentTimeMillis()) {
             return Optional.empty();
         }
 

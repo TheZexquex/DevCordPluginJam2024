@@ -30,6 +30,8 @@ public class PlayerQuitListener implements Listener {
             teamColor = teamOptional.get().teamColor().textColor();
         }
 
+        game.handlePotentialWin();
+
         event.quitMessage(Component.empty());
         messenger.broadcast(Messenger.PREFIX + "<" + teamColor.asHexString() + ">" + player.getName() + " <gray>hat das Spiel verlassen");
     }
