@@ -13,6 +13,7 @@ Bedwars, you know, flying islands, teams fighting each other and pushing each ot
 Bedwars as you know it, or maybe not? 😏
 - Wouldn't it be funny if you could change teams during a match?
 - How about only being able to destroy your own bed?
+- What ist that? A 🛏️ ? Can you mabe place.. No that cant be, or can it?
 - Or an unexpected surprise from the air?
 - How about a knocckback stick hat gives YOU knockback?
 - Funny special items like the egg brige or an guard that attacs random players? Check
